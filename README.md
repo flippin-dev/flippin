@@ -10,7 +10,7 @@ Puzzle difficulty increases throughout the week:
 - **Medium** - Wednesday, Thursday, Friday
 - **Hard** - Saturday, Sunday
 
-## [🟦 Play here]({https://flippin-dev.github.io/flippin/)
+## [🟦 Play here](https://flippin-dev.github.io/flippin/)
 
 ## Gameplay
 
