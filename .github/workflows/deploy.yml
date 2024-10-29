@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+	  - '.github/workflows/deploy.yml'
       - 'src/**'
       - 'static/**'
       - 'package-lock.json'
@@ -17,15 +18,11 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
 
-      - name: Upgrade npm 🎉
-        run: sudo npm i -g npm@7 --registry=https://registry.npmjs.org
-
-      - name: Cache Node Modules
-        id: cache-node-modules
-        uses: actions/cache@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}
+		      node-version: 20
+		      cache: npm
 
       - name: Install and Build 🔧
         run: |
