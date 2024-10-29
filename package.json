@@ -1,0 +1,51 @@
+{
+	"name": "flippin",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"test": "npm run test:integration && npm run test:unit",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write .",
+		"test:integration": "playwright test",
+		"test:unit": "vitest"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.48.2",
+		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/kit": "^2.0.0",
+		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"@testing-library/jest-dom": "^6.5.0",
+		"@testing-library/svelte": "^5.2.1",
+		"@testing-library/user-event": "^14.5.2",
+		"@types/eslint": "^8.56.7",
+		"@types/testing-library__jest-dom": "^6.0.0",
+		"@vitest/browser": "^1.6.0",
+		"@zerodevx/svelte-toast": "^0.9.5",
+		"eslint": "^9.0.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-svelte": "^2.36.0",
+		"globals": "^15.0.0",
+		"jsdom": "^25.0.1",
+		"prettier": "^3.1.1",
+		"prettier-plugin-svelte": "^3.1.2",
+		"svelte": "^4.2.7",
+		"svelte-check": "^3.6.0",
+		"svelte-toggle": "^4.0.1",
+		"tslib": "^2.4.1",
+		"typescript": "^5.0.0",
+		"typescript-eslint": "^8.0.0-alpha.20",
+		"vite": "^5.0.3",
+		"vitest": "^1.6.0"
+	},
+	"type": "module",
+	"dependencies": {
+		"@leveluptuts/svelte-fit": "^1.0.3",
+		"dayjs": "^1.11.11",
+		"svelte-select": "^5.8.3"
+	}
+}
