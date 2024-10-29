@@ -34,6 +34,10 @@ Custom color themes can be added through a prompt in the settings menu. They wil
 
 Custom puzzles can be added through a prompt in the settings menu. They will then show up in the freeplay puzzles list also found in the settings menu. A title, starting board state, and end board state must be provided for each puzzle. The board state values are provided as a string of 25 numbers (0, 1, or 2) read as the tile values left-to-right and row-by-row. The numbers 0, 1, and 2 represent the theme colors associated with each tile. For easier editing of the board states, try to first format them in a grid similar to how they would appear in the puzzle before making them match the expected format of the import prompt.
 
+## Stat Import
+
+Stats can be imported in a similar way to custom themes and custom puzzles through a prompt in the stats menu.
+
 ## Local Storage
 
 Flippin can optionally use your device's local storage to keep track of the following information:
