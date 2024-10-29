@@ -1,0 +1,40 @@
+ _________   ___         _________   _________   _________   _________   _     ___ 
+|    _____| |   |       |_     ___| |    ___  | |  ___    | |___     _| | |_  |   |
+|   |_____  |   |         |   |     |   |___| | | |___|   |     |   |   |  _|_|   |
+|    _____| |   |         |   |     |    _____| |  _______|     |   |   | | |_    |
+|   |       |   |_____   _|   |___  |   |       | |          ___|   |_  | |   |   |
+|___|       |_________| |_________| |___|       |_|         |_________| |_|   |___|
+
+
+Hello, fellow human or lost bot!
+
+Thank you for your interest in Flippin! I created this game after my friends,
+family, and I got hooked on various daily games such as Wordle and Connections.
+I wanted to make a daily game based around colors and art and that idea
+eventually became this play on classic tile flipping puzzles (like Lights Out).
+In addition to my puzzles and color themes, I wanted to allow users to use and
+share their own as well.
+
+I was inspired by Word Peaks to write the site using the Svelte framework and I
+generated the boards and did other mathy stuff using Julia.
+
+Now get back to flipping those tiles!
+
+
+/* TEAM */
+Creator: Brendan Sherman
+
+
+/* INSPIRATION */
+Wordle: https://www.nytimes.com/games/wordle
+
+Connections: https://www.nytimes.com/games/connections
+
+Word Peaks: https://vegeta897.github.io/word-peaks
+Contact: https://vegeta897.carrd.co/
+
+Lights Out: https://en.wikipedia.org/wiki/Lights_Out_(game)
+
+/* SITE */
+Language: English
+Art: MS Paint, Inkscape, GIMP

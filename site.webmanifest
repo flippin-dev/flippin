@@ -1,0 +1,21 @@
+{
+	"name": "Flippin",
+	"short_name": "Flippin",
+	"description": "Flip colorful tiles to match the image! Solve the daily puzzle or play old and custom puzzles in freeplay mode!",
+	"icons": [
+		{
+			"src": "https://flippin-dev.github.io/flippin/android-chrome-192x192.png?v=1",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "https://flippin-dev.github.io/flippin/android-chrome-512x512.png?v=1",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	],
+	"start_url": "https://flippin-dev.github.io/flippin/",
+	"theme_color": "#121212",
+	"background_color": "#121212",
+	"display": "standalone"
+}
