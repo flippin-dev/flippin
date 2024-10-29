@@ -4,7 +4,7 @@ import { gameMode, stats } from '$src/stores/stores';
 import userEvent from '@testing-library/user-event';
 import { get } from 'svelte/store';
 import * as pageUtils from '$src/lib/page-utilities';
-import Stats from './Stats.svelte';
+import Stats from '$com/Stats.svelte';
 import { newStats } from '$src/lib/stats';
 import { tick } from 'svelte';
 

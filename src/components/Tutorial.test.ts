@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/svelte';
 import { expect, it } from 'vitest';
-import Tutorial from './Tutorial.svelte';
+import Tutorial from '$com/Tutorial.svelte';
 
 HTMLDialogElement.prototype.show = vi.fn();
 HTMLDialogElement.prototype.close = vi.fn();

@@ -13,7 +13,7 @@ A component that presents a timer for the daily puzzle with a message once the t
 	import dayjs from 'dayjs';
 	import duration from 'dayjs/plugin/duration';
 	import { gameTime, hasWon } from '$src/stores/stores';
-	import { currentScreen } from '../stores/stores';
+	import { currentScreen } from '$src/stores/stores';
 	import { timerFormat } from '$lib/time';
 
 	/** The time limit for the timer. */

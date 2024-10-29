@@ -4,7 +4,7 @@ A component that holds various control buttons as well as the game timer.
 -->
 
 <script lang="ts">
-	import Timer from './Timer.svelte';
+	import Timer from '$com/Timer.svelte';
 	import {
 		currentScreen,
 		gameMode,

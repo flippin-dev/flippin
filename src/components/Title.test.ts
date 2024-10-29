@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/svelte';
 import { expect, it } from 'vitest';
 import { gameMode, gameNumber } from '$src/stores/stores';
-import Title from './Title.svelte';
+import Title from '$com/Title.svelte';
 
 const ResizeObserverMock = vi.fn(() => ({
 	observe: vi.fn(),

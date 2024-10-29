@@ -4,7 +4,7 @@ A component that presents a congratulatory message, the time until the next dail
 -->
 
 <script lang="ts">
-	import Countdown from './Countdown.svelte';
+	import Countdown from '$com/Countdown.svelte';
 	import {
 		dailyTitle,
 		gameDetails,

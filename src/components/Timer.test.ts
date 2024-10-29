@@ -6,7 +6,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import * as time from '$src/lib/time';
 import { tick } from 'svelte';
-import Timer from './Timer.svelte';
+import Timer from '$com/Timer.svelte';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
