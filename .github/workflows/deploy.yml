@@ -1,0 +1,38 @@
+# Action based on the one used for https://github.com/vegeta897/word-peaks
+name: Build and Deploy
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'static/**'
+      - 'package-lock.json'
+      - 'svelte.config.js'
+      - 'tsconfig.json'
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Upgrade npm 🎉
+        run: sudo npm i -g npm@7 --registry=https://registry.npmjs.org
+
+      - name: Cache Node Modules
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install and Build 🔧
+        run: |
+          npm install
+          npm run build
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        with:
+          branch: gh-pages
+          folder: build
