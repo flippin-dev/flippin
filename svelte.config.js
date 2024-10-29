@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import path from 'path';
 
@@ -17,6 +17,7 @@ const config = {
 			$src: path.resolve('./src'),
 			$com: path.resolve('./src/components'),
 		},
+		appDir: 'app',
 		paths: {
 			base: '/flippin',
 		},
