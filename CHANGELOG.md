@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CHANGELOG file.
 - 21 new daily puzzles.
 - Added .gitattributes file to have Linguist ignore Julia HTML pages in language calculations.
+- Static error page for Github Pages to serve.
 
 ### Changed
 
