@@ -28,70 +28,34 @@
 		<link rel="author" href="https://flippin-dev.github.io/flippin/humans.txt" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		
-		<link href="./app/immutable/assets/0.DuAcSaHf.css" rel="stylesheet">
-		<link href="./app/immutable/assets/duration.DbLvtVfH.css" rel="stylesheet">
-		<link href="./app/immutable/assets/2.DYup11Cz.css" rel="stylesheet">
-		<link rel="modulepreload" href="./app/immutable/entry/start.Ca8-W7j4.js">
-		<link rel="modulepreload" href="./app/immutable/chunks/entry.C4IfwwCe.js">
-		<link rel="modulepreload" href="./app/immutable/chunks/scheduler.BZjK8bPV.js">
-		<link rel="modulepreload" href="./app/immutable/chunks/index.DdV3y6gL.js">
-		<link rel="modulepreload" href="./app/immutable/entry/app.lLrmWqr8.js">
-		<link rel="modulepreload" href="./app/immutable/chunks/index.BvlOJt4R.js">
-		<link rel="modulepreload" href="./app/immutable/nodes/0.CK3u-4nl.js">
-		<link rel="modulepreload" href="./app/immutable/chunks/duration.DacjEN2q.js">
-		<link rel="modulepreload" href="./app/immutable/chunks/stores.ZkB9RYYi.js">
-		<link rel="modulepreload" href="./app/immutable/nodes/2.gBhJSaTl.js"><!-- HEAD_svelte-1fq1ain_START --><style data-svelte-h="svelte-10k3omf">:root,
-			body {
-				--color-bg-0: #121212;
-				--color-bg-1: #1c1c1c;
-				--color-bg-2: #202020;
-				--color-border: #606060;
-				--color-hover: #363636;
-				--color-selected: #909090;
-				--color-text: #e0e0e0;
-				--color-text-outline: #000000;
-				--color-list-placeholder: #d0d0d0;
-				--color-list-border: #474747;
-				--color-list-border-hover: #303030;
-				--color-list-bg: #636363;
-				--color-list-hover: #505050;
-				--color-list-selected: #303030;
-				--color-disabled-text: #909090;
-				--color-disabled-bg: #252525;
-				--link-color: #1d81d3;
-				color: var(--color-text);
-			}</style><!-- HEAD_svelte-1fq1ain_END -->
+		<link rel="modulepreload" href="/flippin/app/immutable/entry/start.Ca8-W7j4.js">
+		<link rel="modulepreload" href="/flippin/app/immutable/chunks/entry.C4IfwwCe.js">
+		<link rel="modulepreload" href="/flippin/app/immutable/chunks/scheduler.BZjK8bPV.js">
+		<link rel="modulepreload" href="/flippin/app/immutable/chunks/index.DdV3y6gL.js">
+		<link rel="modulepreload" href="/flippin/app/immutable/entry/app.lLrmWqr8.js">
+		<link rel="modulepreload" href="/flippin/app/immutable/chunks/index.BvlOJt4R.js">
 	</head>
 	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">   <div class="app svelte-5d9gm7"><div id="hidden-alert-container" role="alert" class="visually-hidden"></div> <div class="loading" data-svelte-h="svelte-mjfi5d"><p>Loading...</p> <p>This might take a minute if the server is unreachable or your connection
-				is slow.</p></div> </div> 
-			
+		<div style="display: contents">
 			<script>
 				{
 					__sveltekit_1vzi1h = {
-						base: new URL(".", location).pathname.slice(0, -1),
+						base: "/flippin",
 						assets: "/flippin"
 					};
 
 					const element = document.currentScript.parentElement;
 
-					const data = [null,null];
-
 					Promise.all([
-						import("./app/immutable/entry/start.Ca8-W7j4.js"),
-						import("./app/immutable/entry/app.lLrmWqr8.js")
+						import("/flippin/app/immutable/entry/start.Ca8-W7j4.js"),
+						import("/flippin/app/immutable/entry/app.lLrmWqr8.js")
 					]).then(([kit, app]) => {
-						kit.start(app, element, {
-							node_ids: [0, 2],
-							data,
-							form: null,
-							error: null
-						});
+						kit.start(app, element);
 					});
 
 					if ('serviceWorker' in navigator) {
 						addEventListener('load', function () {
-							navigator.serviceWorker.register('./service-worker.js');
+							navigator.serviceWorker.register('/flippin/service-worker.js');
 						});
 					}
 				}
