@@ -13,10 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 21 new daily puzzles.
 - Added .gitattributes file to have Linguist ignore Julia HTML pages in language calculations.
 - Static error page for Github Pages to serve.
+- Move count and reset count tracking.
 
 ### Changed
 
 - Updated .prettierignore to ignore Github files.
+- Updated format of share message to include move count, reset count, and game URL.
 
 ### Fixed
 
