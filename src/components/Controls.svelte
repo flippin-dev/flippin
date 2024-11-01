@@ -127,6 +127,8 @@ A component that holds various control buttons as well as the game timer.
 			stroke="var(--color-text)"
 			stroke-linecap="round"
 			xmlns="http://www.w3.org/2000/svg"
+			height="100%"
+			width="100%"
 		>
 			<path
 				d="

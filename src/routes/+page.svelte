@@ -133,6 +133,10 @@
 	let isMounted = false;
 	/** Whether or not the displayed puzzle is the daily puzzle. */
 	let isDaily = true;
+	/** The number of moves used so far in the daily puzzle. */
+	let moveCount = 0;
+	/** The number of resets used so far in the daily puzzle. */
+	let resetCount = 0;
 
 	/** Subscribe to gameDetails so that it's always available for caching. */
 	$: curGameDetails = $gameDetails;
@@ -154,6 +158,8 @@
 		// Set game time and current board if the last played game matches the current day
 		if (curGameDetails?.lastGame === get(gameNumber)) {
 			gameTime.set(curGameDetails?.curTime ?? 0);
+			moveCount = curGameDetails?.moveCount ?? 0;
+			resetCount = curGameDetails?.resetCount ?? 0;
 			const currentBoard = curGameDetails?.curBoard ?? '';
 			game = new Game(currentBoard);
 		} else {
@@ -164,6 +170,8 @@
 					curTime: 0,
 					curBoard: game.serializeCurrent(),
 					lastGame: get(gameNumber),
+					moveCount: 0,
+					resetCount: 0,
 				};
 			});
 		}
@@ -216,6 +224,8 @@
 					curTime: get(gameTime),
 					curBoard: game.serializeCurrent(),
 					lastGame: get(gameNumber),
+					moveCount: moveCount,
+					resetCount: resetCount,
 				};
 			});
 		}
@@ -235,6 +245,10 @@
 	function updateBoard(row: number, column: number) {
 		if ($hasWon && $gameMode === 'daily') {
 			return;
+		}
+
+		if ($gameMode === 'daily') {
+			moveCount++;
 		}
 
 		game.update(row, column);
@@ -266,6 +280,10 @@
 							!stats.fastestGame || time < stats.fastestGame
 								? time
 								: stats.fastestGame,
+						fewestMoves:
+							!stats.fewestMoves || moveCount < stats.fewestMoves
+								? moveCount
+								: stats.fewestMoves,
 						distribution: distribution,
 					};
 				});
@@ -282,6 +300,7 @@
 
 		// Reset game
 		if (isDaily) {
+			resetCount++;
 			game = new Game();
 		} else {
 			hasWonFreeplay.set(false);
@@ -319,6 +338,8 @@
 				curTime: time,
 				curBoard: details.curBoard,
 				lastGame: get(gameNumber),
+				moveCount: moveCount,
+				resetCount: resetCount,
 			};
 		});
 	}

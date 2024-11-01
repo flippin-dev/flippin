@@ -48,7 +48,7 @@ A component that presents users with game stats.
 	 * @example
 	 * ```ts
 	 * // returns [true, '']
-	 * validateImportStatsText('{"wonGames":1,"fastestGame":23,"distribution":[1,0,0,0,0,0,0,0,0,0,0]}');
+	 * validateImportStatsText('{"wonGames":1,"fastestGame":23,"fewestMoves":10,"distribution":[1,0,0,0,0,0,0,0,0,0,0]}');
 	 * ```
 	 *
 	 * @returns {[boolean, string]} An array containing the boolean result and an error message if applicable.
@@ -59,7 +59,7 @@ A component that presents users with game stats.
 		}
 
 		try {
-			const { wonGames, fastestGame, distribution }: Stats =
+			const { wonGames, fastestGame, fewestMoves, distribution }: Stats =
 				JSON.parse(importText);
 
 			// Validate all fields
@@ -76,6 +76,12 @@ A component that presents users with game stats.
 				return [
 					false,
 					'fastestGame must either be null or a nonnegative number!',
+				];
+			}
+			if (fewestMoves && fewestMoves < 0) {
+				return [
+					false,
+					'fewestMoves value must either be null or a nonnegative number!',
 				];
 			}
 			if (distribution === undefined) {
@@ -108,7 +114,7 @@ A component that presents users with game stats.
 	 *
 	 * @example
 	 * ```ts
-	 * importStats('{"wonGames":1,"fastestGame":23,"distribution":[1,0,0,0,0,0,0,0,0,0,0]}');
+	 * importStats('{"wonGames":1,"fastestGame":23,"fewestMoves":10,"distribution":[1,0,0,0,0,0,0,0,0,0,0]}');
 	 * ```
 	 */
 	function importStats(importText: string) {
@@ -126,8 +132,8 @@ A component that presents users with game stats.
 	 *
 	 * @example
 	 * ```ts
-	 * // returns '{"wonGames":1,"fastestGame":23,"distribution":[1,0,0,0,0,0,0,0,0,0,0]}'
-	 * let stats = {wonGames:1,fastestGame:23,distribution:[1,0,0,0,0,0,0,0,0,0,0]};
+	 * // returns '{"wonGames":1,"fastestGame":23,"fewestMoves":10,"distribution":[1,0,0,0,0,0,0,0,0,0,0]}'
+	 * let stats = {wonGames:1,fastestGame:23,fewestMoves:10,distribution:[1,0,0,0,0,0,0,0,0,0,0]};
 	 * generateExportStatsText(stats);
 	 * ```
 	 *
@@ -203,7 +209,7 @@ A component that presents users with game stats.
 	 *
 	 * @example
 	 * ```ts
-	 * onCopyClick('{"wonGames":1,"fastestGame":23,"distribution":[1,0,0,0,0,0,0,0,0,0,0]}');
+	 * onCopyClick('{"wonGames":1,"fastestGame":23,"fewestMoves":10,"distribution":[1,0,0,0,0,0,0,0,0,0,0]}');
 	 * ```
 	 */
 	function onCopyClick(text: string) {
@@ -243,6 +249,12 @@ A component that presents users with game stats.
 					><strong role="presentation">Fastest Game</strong></span
 				>
 				<span role="cell">{formatFastestGame($stats.fastestGame)}</span>
+			</div>
+			<div role="row" data-testid="fewest-moves" class="stats-item">
+				<span role="rowheader"
+					><strong role="presentation">Fewest Moves</strong></span
+				>
+				<span role="cell">{$stats.fewestMoves ?? ''}</span>
 			</div>
 		</div>
 
@@ -403,6 +415,7 @@ A component that presents users with game stats.
 	.text-stats-container {
 		display: flex;
 		width: 100%;
+		flex-wrap: wrap;
 	}
 
 	.stats-item {
@@ -412,7 +425,8 @@ A component that presents users with game stats.
 		justify-content: flex-start;
 		align-items: center;
 		text-align: center;
-		padding: 0 0.2rem;
+		text-wrap: nowrap;
+		padding: 0 0.5rem;
 	}
 
 	.graph-container {

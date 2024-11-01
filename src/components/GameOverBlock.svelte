@@ -48,15 +48,16 @@ A component that presents a congratulatory message, the time until the next dail
 	 * @returns {void}
 	 */
 	function share(): void {
-		const title = `I beat Flippin #${get(gameNumber)}: ${get(dailyTitle)}`;
+		const title = `Flippin #${get(gameNumber)}: ${get(dailyTitle)}`;
+		const url = 'https://flippin-dev.github.io/flippin/';
 		const storedTime = getTime();
 		const time =
 			storedTime > 0
 				? dayjs.duration(storedTime).format(timerFormat)
 				: maxTimeMessage;
-		const board = get(gameDetails).curBoard;
+		const { moveCount, resetCount, curBoard } = get(gameDetails);
 
-		if (board === null) {
+		if (curBoard === null) {
 			toastAndAlert('Could not find board image', {
 				theme: { '--toastBackground': 'var(--error-color)' },
 			});
@@ -64,14 +65,14 @@ A component that presents a congratulatory message, the time until the next dail
 		}
 
 		let output = '';
-		for (let i = 0; i < board.length; i++) {
+		for (let i = 0; i < curBoard.length; i++) {
 			if (i % boardSize === 0 && i !== 0) {
 				output += '\n';
 			}
-			output += board[i] === '0' ? '🟥' : board[i] === '1' ? '🟩' : '🟦';
+			output += curBoard[i] === '0' ? '🟥' : curBoard[i] === '1' ? '🟩' : '🟦';
 		}
 
-		let text = `${title}\nTime: ${time}\n${output}`;
+		let text = `${title}\n${output}\nTime: ${time}\nMoves: ${moveCount ?? ''}\nResets: ${resetCount ?? ''}\n\n${url}`;
 
 		navigator.clipboard.writeText(text).then(
 			() => toastAndAlert('Results copied to clipboard'),

@@ -149,5 +149,5 @@ test('Game win', async ({ page, context }) => {
 		.click();
 
 	const shareText = await page.evaluate('navigator.clipboard.readText()');
-	expect(shareText).toContain('I beat Flippin');
+	expect(shareText).toContain('Flippin #');
 });
