@@ -54,6 +54,7 @@ it('Stats update', async () => {
 
 	const wonGamesRow = screen.getByTestId('won-games');
 	const fastestGameRow = screen.getByTestId('fastest-game');
+	const fewestMovesRow = screen.getByTestId('fewest-moves');
 
 	expect(
 		within(wonGamesRow).getByRole('cell', { hidden: true }),
@@ -66,6 +67,7 @@ it('Stats update', async () => {
 	stats.set({
 		wonGames: 1,
 		fastestGame: 30,
+		fewestMoves: 10,
 		distribution: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	});
 
@@ -77,6 +79,9 @@ it('Stats update', async () => {
 	expect(
 		within(fastestGameRow).getByRole('cell', { hidden: true }),
 	).toHaveTextContent('30');
+	expect(
+		within(fewestMovesRow).getByRole('cell', { hidden: true }),
+	).toHaveTextContent('10');
 	expect(screen.getByTestId('row0')).toHaveTextContent('1');
 });
 
@@ -252,6 +257,46 @@ describe('Import section', () => {
 
 			expect(status).toHaveTextContent(
 				'fastestGame must either be null or a nonnegative number!',
+			);
+			expect(importButton).toBeDisabled();
+		});
+
+		it('Invalid fewestMoves', async () => {
+			const user = userEvent.setup();
+
+			render(Stats);
+
+			const importSectionButton = screen.getByRole('button', {
+				hidden: true,
+				name: 'Import Stats',
+			});
+
+			await user.click(importSectionButton);
+
+			const importButton = screen.getByRole('button', {
+				hidden: true,
+				name: 'Import New Stats',
+			});
+			expect(importButton).toBeDisabled();
+
+			const status = screen.getByRole('status', {
+				hidden: true,
+				name: 'stats import status message',
+			});
+			expect(status).toHaveTextContent('Paste your stats here!');
+
+			const textbox = screen.getByRole('textbox', {
+				hidden: true,
+				name: 'stats import',
+			});
+
+			await user.clear(textbox);
+			await user.paste(
+				'{"wonGames":1,"fastestGame":23,"fewestMoves":-1,"distribution":[1,0,0,0,0,0,0,0,0,0,0]}',
+			);
+
+			expect(status).toHaveTextContent(
+				'fewestMoves value must either be null or a nonnegative number!',
 			);
 			expect(importButton).toBeDisabled();
 		});
