@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added .gitattributes file to have Linguist ignore Julia HTML pages in language calculations.
 - Static error page for Github Pages to serve.
 - Move count and reset count tracking.
+- More verbose README sections on the various menus.
 
 ### Changed
 
