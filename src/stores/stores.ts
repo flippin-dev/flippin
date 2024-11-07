@@ -2,7 +2,12 @@ import type { Stats, GameDetails } from '$lib/stats';
 import { newGameDetails, newStats } from '$lib/stats';
 import type { Theme } from '$lib/themes';
 import { colorRegEx, defaultThemesMap } from '$lib/themes';
-import { puzzles, freeplayExample, isPuzzleSolvable } from '$lib/puzzles';
+import {
+	puzzles,
+	freeplayExample,
+	isPuzzleSolvable,
+	testPuzzle,
+} from '$lib/puzzles';
 import type { Puzzle, SerializedPuzzle } from '$lib/puzzles';
 import { derived, writable } from 'svelte/store';
 import type { Readable, Writable } from 'svelte/store';
@@ -167,6 +172,13 @@ export const freeplayPuzzles: Readable<Map<string, Puzzle>> = derived(
 		// Ensure there is always a freeplay puzzle
 		const { title: exTitle, start: exStart, end: exEnd } = freeplayExample;
 		puzzlesMap.set(`${customPrefix}${exTitle}`, { start: exStart, end: exEnd });
+
+		// Add a blank puzzle to easily test move combinations
+		const { title: testTitle, start: testStart, end: testEnd } = testPuzzle;
+		puzzlesMap.set(`${customPrefix}${testTitle}`, {
+			start: testStart,
+			end: testEnd,
+		});
 
 		for (const [title, { start, end }] of $customPuzzles) {
 			// Validate that title is populated

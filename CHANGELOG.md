@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- 35 new daily puzzles.
+- 1 new freeplay puzzle.
+
+### Changed
+
+- Updated the names of 6 daily puzzles to better fit weekly theme.
+
 ## [1.1.0] - 2024-11-01
 
 ### Added
