@@ -78,9 +78,11 @@ button {
 	touch-action: manipulation;
 }
 
-button:hover {
-	background-color: var(--color-hover);
-	cursor: pointer;
+@media (hover: hover) and (pointer: fine) {
+	button:hover {
+		background-color: var(--color-hover);
+		cursor: pointer;
+	}
 }
 
 button:disabled {

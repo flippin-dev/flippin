@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated the names of 6 daily puzzles to better fit weekly theme.
 
+### Fixed
+
+- Sticky hover visual for reset button on touchscreen devices.
+
 ## [1.1.0] - 2024-11-01
 
 ### Added
