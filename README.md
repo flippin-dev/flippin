@@ -127,7 +127,7 @@ Saved stats can be exported by clicking the **Export Stats** button and then cli
 
 ## Math Stuff
 
-For more details on the puzzle creation process and how solvability is checked, look in the [julia folder](/julia/README.md) of this repository.
+For more details on the puzzle creation process, solvability, and other math stuff, look in the [julia folder](/julia/README.md) of this repository.
 
 ## Inspiration and Acknowledgments
 

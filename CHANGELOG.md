@@ -11,10 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - 35 new daily puzzles.
 - 1 new freeplay puzzle.
+- Documentation on Light Chasing algorithm.
+- PDF versions of all Julia files.
 
 ### Changed
 
 - Updated the names of 6 daily puzzles to better fit weekly theme.
+- Updated .gitattributes file to have Linguist ignore Julia PDF pages in language calculations.
 
 ### Fixed
 
