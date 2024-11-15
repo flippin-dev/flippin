@@ -13,7 +13,7 @@ import {
 import Settings from '$com/Settings.svelte';
 import userEvent from '@testing-library/user-event';
 import { get } from 'svelte/store';
-import * as pageUtils from '$src/lib/page-utilities';
+import * as pageUtils from '$lib/page-utilities';
 
 HTMLDialogElement.prototype.show = vi.fn();
 HTMLDialogElement.prototype.close = vi.fn();
@@ -981,7 +981,7 @@ it('Reduced motion toggle', async () => {
 });
 
 describe('Storage consent', () => {
-	it('Accept', async () => {
+	it('Confirm', async () => {
 		const user = userEvent.setup();
 		storageConsent.set(false);
 		storageNoticeVisible.set(false);
@@ -1006,7 +1006,7 @@ describe('Storage consent', () => {
 
 		await user.click(screen.getByRole('checkbox', { hidden: true }));
 		await user.click(
-			screen.getByRole('button', { hidden: true, name: 'Accept' }),
+			screen.getByRole('button', { hidden: true, name: 'Confirm' }),
 		);
 
 		expect(

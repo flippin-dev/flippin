@@ -18,6 +18,8 @@ Puzzle difficulty increases throughout the week:
 - Press a tile to flip it and the surrounding tiles to the next color in the cycle.
 - Tiles follow a 3 color cycle when flipped: 🟥 -> 🟩 -> 🟦 -> 🟥
 - Press the restart button if you get stuck and want to start over.
+- Press the hint button if you want a hint.
+- Press the surrender button if you want to surrender.
 
 ### Tips
 

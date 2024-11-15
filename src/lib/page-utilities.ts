@@ -5,7 +5,7 @@
 
 import { browser } from '$app/environment';
 import { toast } from '@zerodevx/svelte-toast';
-import { mod } from '$lib/puzzles';
+import { mod } from '$lib/math';
 import { shouldRefocus } from '$src/stores/stores';
 
 /**

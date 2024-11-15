@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
 import timezone from 'dayjs/plugin/timezone.js';
-import { countdownTimeZone } from '$src/lib/time';
+import { countdownTimeZone } from '$lib/time';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -122,6 +122,48 @@ test('Board reset', async ({ page }) => {
 	await expect(bottomTile).toHaveClass(/color1/);
 });
 
+test('Hint', async ({ page }) => {
+	storageConsent.set(false);
+	await page.clock.setFixedTime(
+		new Date(dayjs.tz('2024-10-28 00:00:00').valueOf()),
+	);
+	await page.goto('/');
+
+	await page.getByRole('checkbox').check();
+	await page.getByRole('button', { name: 'Decline' }).click();
+
+	await expect(
+		page.getByRole('heading', { name: 'How to Play' }),
+	).toBeVisible();
+	await page.getByRole('button', { name: 'close dialog' }).click();
+
+	await page.getByTestId('row0-col2').dblclick();
+	await page.getByTestId('row0-col3').dblclick();
+	await page.getByTestId('row1-col0').dblclick();
+	await page.getByTestId('row1-col3').dblclick();
+	// await page.getByTestId('row3-col0').dblclick();
+
+	const upperLeftTile = page.getByTestId('row0-col0');
+	const hintTile = page.getByTestId('row3-col0');
+	const hintButton = page.getByRole('button', { name: 'Hint' });
+
+	await expect(upperLeftTile).toBeEnabled();
+	await expect(hintTile).toBeEnabled();
+	await expect(hintButton).toBeEnabled();
+
+	await hintButton.click();
+
+	await expect(upperLeftTile).toBeDisabled();
+	await expect(hintTile).toBeEnabled();
+	await expect(hintButton).toBeDisabled();
+
+	await hintTile.click();
+
+	await expect(upperLeftTile).toBeEnabled();
+	await expect(hintTile).toBeEnabled();
+	await expect(hintButton).toBeEnabled();
+});
+
 test('Game win', async ({ page, context }) => {
 	storageConsent.set(false);
 	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
@@ -150,4 +192,39 @@ test('Game win', async ({ page, context }) => {
 
 	const shareText = await page.evaluate('navigator.clipboard.readText()');
 	expect(shareText).toContain('Flippin #');
+});
+
+test('Game surrender', async ({ page, context }) => {
+	storageConsent.set(false);
+	await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+	await page.clock.setFixedTime(
+		new Date(dayjs.tz('2024-10-28 00:00:00').valueOf()),
+	);
+	await page.goto('/');
+
+	await page.getByRole('checkbox').check();
+	await page.getByRole('button', { name: 'Decline' }).click();
+
+	await expect(
+		page.getByRole('heading', { name: 'Local Storage Notice' }),
+	).not.toBeVisible();
+	await expect(
+		page.getByRole('heading', { name: 'How to Play' }),
+	).toBeVisible();
+	await page.getByRole('button', { name: 'close dialog' }).click();
+
+	await page.getByRole('button', { name: 'Surrender' }).click();
+
+	await expect(
+		page.getByRole('heading', { name: 'Surrender Notice' }),
+	).toBeVisible();
+	await page.getByLabel('Do you understand the notice above?').check();
+	await page.getByRole('button', { name: 'Confirm' }).click();
+
+	await page
+		.getByRole('button', { name: 'copy game results to clipboard' })
+		.click();
+
+	const shareText = await page.evaluate('navigator.clipboard.readText()');
+	expect(shareText).toContain('🏳');
 });

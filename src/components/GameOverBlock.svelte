@@ -55,7 +55,8 @@ A component that presents a congratulatory message, the time until the next dail
 			storedTime > 0
 				? dayjs.duration(storedTime).format(timerFormat)
 				: maxTimeMessage;
-		const { moveCount, resetCount, curBoard } = get(gameDetails);
+		const { curBoard, moveCount, resetCount, hintCount, hasSurrendered } =
+			get(gameDetails);
 
 		if (curBoard === null) {
 			toastAndAlert('Could not find board image', {
@@ -72,7 +73,7 @@ A component that presents a congratulatory message, the time until the next dail
 			output += curBoard[i] === '0' ? '🟥' : curBoard[i] === '1' ? '🟩' : '🟦';
 		}
 
-		let text = `${title}\n${output}\nTime: ${time}\nMoves: ${moveCount ?? ''}\nResets: ${resetCount ?? ''}\n\n${url}`;
+		let text = `${title}\n${output}\nTime: ${time}${hasSurrendered ? ' 🏳' : ''}\nMoves: ${moveCount ?? ''}\nResets: ${resetCount ?? ''}\nHints: ${hintCount ?? ''}\n\n${url}`;
 
 		navigator.clipboard.writeText(text).then(
 			() => toastAndAlert('Results copied to clipboard'),

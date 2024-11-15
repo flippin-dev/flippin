@@ -3,9 +3,9 @@ import { expect, it } from 'vitest';
 import { gameMode, stats } from '$src/stores/stores';
 import userEvent from '@testing-library/user-event';
 import { get } from 'svelte/store';
-import * as pageUtils from '$src/lib/page-utilities';
+import * as pageUtils from '$lib/page-utilities';
 import Stats from '$com/Stats.svelte';
-import { newStats } from '$src/lib/stats';
+import { newStats } from '$lib/stats';
 import { tick } from 'svelte';
 
 HTMLDialogElement.prototype.show = vi.fn();
