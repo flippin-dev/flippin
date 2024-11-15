@@ -26,7 +26,8 @@ A component that presents users with various game settings.
 	import { offset, size } from 'svelte-floating-ui/dom';
 	import { colorRegEx } from '$lib/themes';
 	import type { SerializedTheme, Theme } from '$lib/themes';
-	import { freeplayExample, isPuzzleSolvable } from '$lib/puzzles';
+	import { freeplayExample } from '$lib/puzzles';
+	import { isPuzzleSolvable } from '$lib/math';
 	import type { Puzzle, SerializedPuzzle } from '$lib/puzzles';
 	import { stateRegEx } from '$lib/game';
 	import { toastAndAlert } from '$lib/page-utilities';

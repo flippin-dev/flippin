@@ -4,8 +4,9 @@ import Dialog from '$com/Dialog.svelte';
 import HeadingWithTitle from '$com/Dialog.title.test.svelte';
 import HeadingWithoutTitle from '$com/Dialog.notitle.test.svelte';
 import userEvent from '@testing-library/user-event';
-import { storageConsent } from '$src/stores/stores';
-import { get } from 'svelte/store';
+import { get, writable } from 'svelte/store';
+
+const confirmationStore = writable(false);
 
 const showCallback = vi.fn();
 const closeCallback = vi.fn();
@@ -16,6 +17,7 @@ HTMLDialogElement.prototype.close = closeCallback;
 afterEach(() => {
 	showCallback.mockClear();
 	closeCallback.mockClear();
+	confirmationStore.set(false);
 });
 
 describe('Normal dialog', () => {
@@ -90,7 +92,11 @@ describe('Normal dialog', () => {
 
 describe('Confirmation dialog', () => {
 	it('No close button', async () => {
-		render(Dialog, { confirmation: true });
+		render(Dialog, {
+			confirmation: true,
+			confirmationMessage: 'Confirm?',
+			confirmationStore: confirmationStore,
+		});
 
 		expect(showCallback).toHaveBeenCalledOnce();
 
@@ -105,7 +111,11 @@ describe('Confirmation dialog', () => {
 	it('No outside click close', async () => {
 		const user = userEvent.setup();
 
-		render(Dialog, { confirmation: true });
+		render(Dialog, {
+			confirmation: true,
+			confirmationMessage: 'Confirm?',
+			confirmationStore: confirmationStore,
+		});
 
 		expect(showCallback).toHaveBeenCalledOnce();
 
@@ -115,7 +125,11 @@ describe('Confirmation dialog', () => {
 	});
 
 	it('No ESC close', async () => {
-		render(Dialog, { confirmation: true });
+		render(Dialog, {
+			confirmation: true,
+			confirmationMessage: 'Confirm?',
+			confirmationStore: confirmationStore,
+		});
 
 		expect(showCallback).toHaveBeenCalledOnce();
 
@@ -126,69 +140,151 @@ describe('Confirmation dialog', () => {
 		expect(closeCallback).not.toHaveBeenCalled();
 	});
 
-	it('Accept', async () => {
+	it('Confirm', async () => {
 		const user = userEvent.setup();
-		storageConsent.set(null);
 
-		render(Dialog, { confirmation: true });
+		render(Dialog, {
+			confirmation: true,
+			confirmationMessage: 'Confirm?',
+			confirmationStore: confirmationStore,
+		});
 
 		expect(showCallback).toHaveBeenCalledOnce();
 
-		const acceptButton = screen.getByRole('button', {
+		const confirmButton = screen.getByRole('button', {
 			hidden: true,
-			name: 'Accept',
+			name: 'Confirm',
 		});
 		const declineButton = screen.getByRole('button', {
 			hidden: true,
 			name: 'Decline',
 		});
 
-		expect(acceptButton).toBeDisabled();
+		expect(confirmButton).toBeDisabled();
 		expect(declineButton).toBeDisabled();
 
 		const checkbox = screen.getByRole('checkbox', { hidden: true });
 
 		await user.click(checkbox);
 
-		expect(acceptButton).toBeEnabled();
+		expect(confirmButton).toBeEnabled();
 		expect(declineButton).toBeEnabled();
 
-		await user.click(acceptButton);
+		await user.click(confirmButton);
 
-		expect(get(storageConsent)).toBe(true);
+		expect(get(confirmationStore)).toBe(true);
 		expect(closeCallback).toHaveBeenCalledOnce();
 	});
 
 	it('Decline', async () => {
 		const user = userEvent.setup();
-		storageConsent.set(null);
 
-		render(Dialog, { confirmation: true });
+		render(Dialog, {
+			confirmation: true,
+			confirmationMessage: 'Confirm?',
+			confirmationStore: confirmationStore,
+		});
 
 		expect(showCallback).toHaveBeenCalledOnce();
 
-		const acceptButton = screen.getByRole('button', {
+		const confirmButton = screen.getByRole('button', {
 			hidden: true,
-			name: 'Accept',
+			name: 'Confirm',
 		});
 		const declineButton = screen.getByRole('button', {
 			hidden: true,
 			name: 'Decline',
 		});
 
-		expect(acceptButton).toBeDisabled();
+		expect(confirmButton).toBeDisabled();
 		expect(declineButton).toBeDisabled();
 
 		const checkbox = screen.getByRole('checkbox', { hidden: true });
 
 		await user.click(checkbox);
 
-		expect(acceptButton).toBeEnabled();
+		expect(confirmButton).toBeEnabled();
 		expect(declineButton).toBeEnabled();
 
 		await user.click(declineButton);
 
-		expect(get(storageConsent)).toBe(false);
+		expect(get(confirmationStore)).toBe(false);
+		expect(closeCallback).toHaveBeenCalledOnce();
+	});
+
+	it('Standalone confirm', async () => {
+		const user = userEvent.setup();
+
+		render(Dialog, {
+			confirmation: true,
+			confirmationMessage: 'Confirm?',
+			confirmationStore: confirmationStore,
+			isStandalone: true,
+		});
+
+		expect(showCallback).toHaveBeenCalledOnce();
+
+		const confirmButton = screen.getByRole('button', {
+			hidden: true,
+			name: 'Confirm',
+		});
+		const declineButton = screen.getByRole('button', {
+			hidden: true,
+			name: 'Decline',
+		});
+
+		expect(confirmButton).toBeDisabled();
+		expect(declineButton).toBeDisabled();
+
+		const checkbox = screen.getByRole('checkbox', { hidden: true });
+
+		await user.click(checkbox);
+
+		expect(confirmButton).toBeEnabled();
+		expect(declineButton).toBeEnabled();
+
+		await user.click(confirmButton);
+
+		expect(closeCallback).toHaveBeenCalled();
+
+		expect(get(confirmationStore)).toBe(true);
+		expect(closeCallback).toHaveBeenCalledOnce();
+	});
+
+	it('Standalone decline', async () => {
+		const user = userEvent.setup();
+
+		render(Dialog, {
+			confirmation: true,
+			confirmationMessage: 'Confirm?',
+			confirmationStore: confirmationStore,
+			isStandalone: true,
+		});
+
+		expect(showCallback).toHaveBeenCalledOnce();
+
+		const confirmButton = screen.getByRole('button', {
+			hidden: true,
+			name: 'Confirm',
+		});
+		const declineButton = screen.getByRole('button', {
+			hidden: true,
+			name: 'Decline',
+		});
+
+		expect(confirmButton).toBeDisabled();
+		expect(declineButton).toBeDisabled();
+
+		const checkbox = screen.getByRole('checkbox', { hidden: true });
+
+		await user.click(checkbox);
+
+		expect(confirmButton).toBeEnabled();
+		expect(declineButton).toBeEnabled();
+
+		await user.click(declineButton);
+
+		expect(get(confirmationStore)).toBe(false);
 		expect(closeCallback).toHaveBeenCalledOnce();
 	});
 });

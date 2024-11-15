@@ -2,12 +2,8 @@ import type { Stats, GameDetails } from '$lib/stats';
 import { newGameDetails, newStats } from '$lib/stats';
 import type { Theme } from '$lib/themes';
 import { colorRegEx, defaultThemesMap } from '$lib/themes';
-import {
-	puzzles,
-	freeplayExample,
-	isPuzzleSolvable,
-	testPuzzle,
-} from '$lib/puzzles';
+import { puzzles, freeplayExample, testPuzzle } from '$lib/puzzles';
+import { isPuzzleSolvable } from '$lib/math';
 import type { Puzzle, SerializedPuzzle } from '$lib/puzzles';
 import { derived, writable } from 'svelte/store';
 import type { Readable, Writable } from 'svelte/store';
@@ -25,6 +21,12 @@ export const customPrefix = 'CSTM-';
 export const hasWon: Writable<boolean> = writable(false);
 /** Whether or not the freeplay puzzle has been won. */
 export const hasWonFreeplay: Writable<boolean> = writable(false);
+/** Whether or not the game has been surrendered. */
+export const shouldSurrender: Writable<boolean> = writable(false);
+/** Whether or not a hint is needed. */
+export const needsHint: Writable<boolean> = writable(false);
+/** Whether or not a hint is active. */
+export const hintActive: Writable<boolean> = writable(false);
 /** Whether or not a board reset is needed. */
 export const shouldReset: Writable<boolean> = writable(false);
 /** Whether or not the last tile pressed needs to be focused on again. */
@@ -32,8 +34,9 @@ export const shouldRefocus: Writable<boolean> = writable(false);
 /** The game timer for daily mode. */
 export const gameTime: Writable<number> = writable(0);
 /** The screen being displayed. */
-export const currentScreen: Writable<null | 'tutorial' | 'settings' | 'stats'> =
-	writable('tutorial');
+export const currentScreen: Writable<
+	null | 'tutorial' | 'settings' | 'stats' | 'surrender'
+> = writable('tutorial');
 /** The storage consent notice is visible. */
 export const storageNoticeVisible: Writable<boolean> = writable(false);
 /** The daily game number. */

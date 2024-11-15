@@ -242,3 +242,13 @@ it('Game current board is serialized correctly', () => {
 
 	expect(serializedBoard).toBe('1011110111112101211101210');
 });
+
+it('Game end board is serialized correctly', () => {
+	// Set gameNumber to -1 so the default puzzle is used
+	gameNumber.set(-1);
+
+	const game = new Game();
+	const serializedBoard = game.serializeEnd();
+
+	expect(serializedBoard).toBe('0202002020000001000101110');
+});

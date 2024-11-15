@@ -14,16 +14,19 @@ A component that creates a dialog box over the page which can be filled with con
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import { quadOut } from 'svelte/easing';
-	import {
-		currentScreen,
-		storageConsent,
-		storageNoticeVisible,
-	} from '$src/stores/stores';
+	import { currentScreen, storageNoticeVisible } from '$src/stores/stores';
+	import type { Writable } from 'svelte/store';
 
 	/** A binding for the dialog element. */
 	let dialog: HTMLDialogElement;
 	/** Whether or not the dialog is for a storage consent confirmation */
 	export let confirmation = false;
+	/** The message to be used to confirm confirmation. */
+	export let confirmationMessage = '';
+	/** The store to update on confirmation. */
+	export let confirmationStore: Writable<boolean | null> | null = null;
+	/** Whether or not the dialog is a standalone confirmation. */
+	export let isStandalone = false;
 	/** Tracks acknowledgment of storage consent notice. */
 	let acknowledged = false;
 
@@ -40,7 +43,7 @@ A component that creates a dialog box over the page which can be filled with con
 		bind:this={dialog}
 		in:fade={{ easing: quadOut, duration: 200 }}
 		on:close={() => {
-			if (!confirmation) {
+			if (!confirmation || isStandalone) {
 				currentScreen.set(null);
 			} else {
 				storageNoticeVisible.set(false);
@@ -96,36 +99,35 @@ A component that creates a dialog box over the page which can be filled with con
 			{#if confirmation}
 				<input
 					type="checkbox"
-					id="storage-notice-acknowledgment"
-					name="storage-notice-acknowledgment"
+					id="notice-acknowledgment"
+					name="notice-acknowledgment"
 					bind:checked={acknowledged}
 				/>
-				<label for="storage-notice-acknowledgment"
+				<label for="notice-acknowledgment"
 					>Do you understand the notice above?</label
 				>
 
 				<p>
-					Do you consent to allowing Flippin to use your device's local storage
-					for the reasons listed above?
+					{confirmationMessage}
 				</p>
 				<div class="confirmation-row">
 					<button
 						class="confirmation-button"
 						on:click={() => {
-							// Confirm that storage can be used
-							storageConsent.set(true);
+							// Set store to true
+							confirmationStore?.set(true);
 							dialog.close();
 						}}
 						disabled={!acknowledged}
 						aria-disabled={!acknowledged}
 					>
-						Accept
+						Confirm
 					</button>
 					<button
 						class="confirmation-button"
 						on:click={() => {
-							// Confirm that storage cannot be used
-							storageConsent.set(false);
+							// Set store to false
+							confirmationStore?.set(false);
 							dialog.close();
 						}}
 						disabled={!acknowledged}

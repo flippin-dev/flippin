@@ -9,6 +9,7 @@ The files in this folder were written in [Julia](https://julialang.org/) using [
 - [Tile Scrambler](#tile-scrambler)
 - [Tile Matrix Util](#tile-matrix-util)
 - [Light Chasing](#light-chasing)
+- [Minimal Solution](#minimal-solution)
 
 
 ## Tile Scrambler
@@ -61,3 +62,13 @@ Current board:
 🟩🟩🟥🟩🟩
 
 you would use the result associated with 2️⃣2️⃣1️⃣2️⃣2️⃣ (i.e. 1️⃣2️⃣0️⃣0️⃣0️⃣).
+
+## Minimal Solution
+
+[MinimalSolution.jl](MinimalSolution.jl)
+
+The purpose of this notebook is to create a utility for finding the minimal solution of a Flippin puzzle (i.e. requires the fewest moves to solve).
+
+This notebook expands on the results of [TileMatrixUtil.jl](TileMatrixUtil.jl).
+
+This is what I used to create the vector constants used when finding the minimal solution of a puzzle.

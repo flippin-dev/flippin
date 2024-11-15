@@ -4,7 +4,7 @@ import { gameNumber } from '$src/stores/stores';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import * as time from '$src/lib/time';
+import * as time from '$lib/time';
 import Countdown from '$com/Countdown.svelte';
 import { tick } from 'svelte';
 

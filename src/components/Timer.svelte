@@ -45,6 +45,9 @@ A component that presents a timer for the daily puzzle with a message once the t
 	$: remaining = dayjs.duration($gameTime);
 
 	$: if ($hasWon) {
+		if ($gameTime >= interval * 1000) {
+			isMaxed = true;
+		}
 		clearInterval(timerInterval);
 	}
 

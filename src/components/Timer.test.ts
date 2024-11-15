@@ -4,7 +4,7 @@ import { currentScreen, gameTime, hasWon } from '$src/stores/stores';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import * as time from '$src/lib/time';
+import * as time from '$lib/time';
 import { tick } from 'svelte';
 import Timer from '$com/Timer.svelte';
 
@@ -79,6 +79,24 @@ it('Has won', async () => {
 	await tick();
 
 	expect(timer.innerHTML).toBe('00:05');
+});
+
+it('Has won after a long time', async () => {
+	currentScreen.set(null);
+	gameTime.set(1000000);
+	hasWon.set(true);
+
+	render(Timer, { interval: 600, message: 'A lot!' });
+
+	const message = screen.getByText('A lot!');
+
+	expect(message).toBeInTheDocument();
+
+	vi.advanceTimersByTime(5000);
+
+	await tick();
+
+	expect(message).toBeInTheDocument();
 });
 
 it('Dialog behavior', async () => {

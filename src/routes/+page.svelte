@@ -12,6 +12,9 @@
 		hasWonFreeplay,
 		reducedMotion,
 		shouldRefocus,
+		needsHint,
+		hintActive,
+		shouldSurrender,
 	} from '$src/stores/stores';
 	import Title from '$com/Title.svelte';
 	import Controls from '$com/Controls.svelte';
@@ -24,6 +27,8 @@
 	import { maxTime } from '$lib/time';
 	import type { TransitionConfig } from 'svelte/transition';
 	import { navigateTable } from '$lib/page-utilities';
+	import ExtraControls from '$com/ExtraControls.svelte';
+	import { findMinimalSolution } from '$lib/math';
 
 	/** The directions a tile can flip. */
 	type FlipDirections = 'up' | 'right' | 'down' | 'left' | null;
@@ -137,6 +142,18 @@
 	let moveCount = 0;
 	/** The number of resets used so far in the daily puzzle. */
 	let resetCount = 0;
+	/** The number of hints used so far in the daily puzzle. */
+	let hintCount = 0;
+	/** A vector containing the moves needed to solve the puzzle. */
+	let hintVector: number[] = [];
+	/** The row of the hint tile. */
+	let hintRow = -1;
+	/** The column of the hint tile. */
+	let hintColumn = -1;
+	/** Flag for if hintVector can be reused. */
+	let hintChain = false;
+	/** Whether or not the player has surrendered. */
+	let hasSurrendered = false;
 
 	/** Subscribe to gameDetails so that it's always available for caching. */
 	$: curGameDetails = $gameDetails;
@@ -160,6 +177,8 @@
 			gameTime.set(curGameDetails?.curTime ?? 0);
 			moveCount = curGameDetails?.moveCount ?? 0;
 			resetCount = curGameDetails?.resetCount ?? 0;
+			hintCount = curGameDetails?.hintCount ?? 0;
+			hasSurrendered = curGameDetails?.hasSurrendered ?? false;
 			const currentBoard = curGameDetails?.curBoard ?? '';
 			game = new Game(currentBoard);
 		} else {
@@ -172,6 +191,8 @@
 					lastGame: get(gameNumber),
 					moveCount: 0,
 					resetCount: 0,
+					hintCount: 0,
+					hasSurrendered: false,
 				};
 			});
 		}
@@ -226,6 +247,8 @@
 					lastGame: get(gameNumber),
 					moveCount: moveCount,
 					resetCount: resetCount,
+					hintCount: hintCount,
+					hasSurrendered: hasSurrendered,
 				};
 			});
 		}
@@ -249,6 +272,13 @@
 
 		if ($gameMode === 'daily') {
 			moveCount++;
+		}
+
+		if ($hintActive) {
+			hintActive.set(false);
+			hintChain = true;
+		} else if (hintChain) {
+			hintChain = false;
 		}
 
 		game.update(row, column);
@@ -298,6 +328,10 @@
 		// Clear flag
 		shouldReset.set(false);
 
+		// Clear any hint information
+		hintActive.set(false);
+		hintChain = false;
+
 		// Reset game
 		if (isDaily) {
 			resetCount++;
@@ -310,6 +344,73 @@
 		// Clear last move to trigger rerender without animation
 		lastRow = -1;
 		lastColumn = -1;
+
+		updateDetails();
+	}
+
+	// Hint is needed
+	$: if ($needsHint) {
+		// Clear flag
+		needsHint.set(false);
+		// Set active hint flag
+		hintActive.set(true);
+
+		// No need to recalculate if back-to-back hints are used
+		if (!hintChain) {
+			// Find the minimal solution to use for hints
+			hintVector = findMinimalSolution(
+				game.serializeCurrent(),
+				game.serializeEnd(),
+			);
+		}
+
+		const initialValue: number[] = [];
+		const hintIndices = hintVector.reduce(
+			(accumulator, currentValue, currentIndex) => {
+				if (currentValue > 0) {
+					accumulator.push(currentIndex);
+				}
+
+				return accumulator;
+			},
+			initialValue,
+		);
+		const hintIndex =
+			hintIndices[Math.floor(Math.random() * hintIndices.length)];
+		hintRow = Math.floor(hintIndex / boardSize);
+		hintColumn = hintIndex % boardSize;
+		// Remove the hint tile from the hint vector
+		hintVector[hintIndex]--;
+
+		// Clear last move to trigger rerender without animation
+		lastRow = -1;
+		lastColumn = -1;
+
+		hintCount++;
+		updateDetails();
+	}
+
+	// Surrender puzzle
+	$: if ($shouldSurrender) {
+		// Clear flag
+		shouldSurrender.set(false);
+
+		// Set current board to end board
+		game.current = game.end;
+
+		// Flag the game as completed
+		if (isDaily) {
+			hasWon.set(true);
+			// Set surrender flag
+			hasSurrendered = true;
+		} else {
+			hasWonFreeplay.set(true);
+		}
+
+		// Clear last move to trigger rerender without animation
+		lastRow = -1;
+		lastColumn = -1;
+		moveToggle = !moveToggle;
 
 		updateDetails();
 	}
@@ -340,6 +441,8 @@
 				lastGame: get(gameNumber),
 				moveCount: moveCount,
 				resetCount: resetCount,
+				hintCount: hintCount,
+				hasSurrendered: hasSurrendered,
 			};
 		});
 	}
@@ -357,13 +460,24 @@
 	function updatePuzzle(mode: string) {
 		// Reinitialize daily details if game mode is switched
 		if (mode === 'daily' && !isDaily) {
+			// Clear any hint information
+			hintActive.set(false);
+			hintChain = false;
+
 			// Reset last move to defaults
 			lastRow = -1;
 			lastColumn = -1;
 			moveToggle = !moveToggle;
 
 			initializeDaily();
-		} else if ($gameMode === 'freeplay' && isDaily) {
+		} else if (mode === 'freeplay' && isDaily) {
+			// Clear any hint information
+			hintActive.set(false);
+			hintChain = false;
+
+			// Clear surrender flag
+			hasSurrendered = false;
+
 			hasWonFreeplay.set(false);
 			game = new Game('', $freeplayPuzzle ?? freeplayExample);
 			isDaily = false;
@@ -446,12 +560,15 @@
 						{@const color2 = label === 1}
 						{@const color3 = label === 2}
 						{@const direction = getDirection(row, column)}
+						{@const hint =
+							$hintActive && row === hintRow && column === hintColumn}
 						{#key moveToggle}
 							<div class="tile">
 								<button
 									class:color1
 									class:color2
 									class:color3
+									class:not-hint={$hintActive && !hint}
 									class:reduced-motion={$reducedMotion}
 									class:won={($hasWon && $gameMode === 'daily') ||
 										($hasWonFreeplay && $gameMode === 'freeplay')}
@@ -470,9 +587,11 @@
 									role="gridcell"
 									aria-label={`${color1 === true ? 'color 1' : color2 === true ? 'color 2' : 'color 3'}`}
 									disabled={($hasWon && $gameMode === 'daily') ||
-										($hasWonFreeplay && $gameMode === 'freeplay')}
+										($hasWonFreeplay && $gameMode === 'freeplay') ||
+										($hintActive && !hint)}
 									aria-disabled={($hasWon && $gameMode === 'daily') ||
-										($hasWonFreeplay && $gameMode === 'freeplay')}
+										($hasWonFreeplay && $gameMode === 'freeplay') ||
+										($hintActive && !hint)}
 								/>
 							</div>
 						{/key}
@@ -481,6 +600,8 @@
 			{/each}
 		</div>
 	</div>
+
+	<ExtraControls />
 
 	<div class="region-container" aria-live="polite">
 		{#if ($hasWon && $gameMode === 'daily') || ($hasWonFreeplay && $gameMode === 'freeplay')}
@@ -522,7 +643,6 @@
 		width: 100%;
 		height: 100%;
 		border: 5px solid var(--color-border);
-		/* cursor: pointer; */
 	}
 
 	:global(.tile button:hover, .tile button:focus) {
@@ -554,6 +674,10 @@
 
 	.tile button.reduced-motion {
 		animation: none;
+	}
+
+	.tile button.not-hint:disabled {
+		filter: brightness(0.5);
 	}
 
 	.region-container {
