@@ -80,6 +80,7 @@ A component that holds extra control buttons separate from the main controls.
 		aria-disabled={isWon || $hintActive}
 	>
 		<svg
+			aria-hidden="true"
 			viewBox="0 18 50 110"
 			fill="var(--color-text)"
 			stroke="var(--color-text)"
