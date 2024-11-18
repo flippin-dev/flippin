@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hint feature.
 - Surrender feature.
 - Hint and surrender tracking.
+- More daily puzzle recap details.
 
 ### Changed
 
