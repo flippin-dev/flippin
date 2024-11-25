@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Surrender feature.
 - Hint and surrender tracking.
 - More daily puzzle recap details.
+- ARCHITECTURE file.
 
 ### Changed
 
@@ -25,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated .gitattributes file to have Linguist ignore Julia PDF pages in language calculations.
 - Updated tutorial with hint and surrender info.
 - Updated display style of bulleted items in lists.
+- Overhauled README so that it's easier to digest.
 
 ### Fixed
 

@@ -154,7 +154,7 @@ A component containing the rules of Flippin.
 	<ul>
 		<li>Press the restart button (upper-right corner) to start over.</li>
 		<li>Press the hint button (lower-left corner) for a hint.</li>
-		<li>Press the surrender button (lower-right corner) to surrender.</li>
+		<li>Press the surrender button (lower-right corner) to give up.</li>
 	</ul>
 	<p>
 		<strong>Warning:</strong> Surrendering solves the current puzzle and does not
