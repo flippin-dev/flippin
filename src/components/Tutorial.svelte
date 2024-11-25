@@ -150,7 +150,20 @@ A component containing the rules of Flippin.
 			</div>
 		</div>
 	</div>
-	<p>Press the restart button if you get stuck and want to start over.</p>
+	<p>If you get stuck:</p>
+	<ul>
+		<li>Press the restart button (upper-right corner) to start over.</li>
+		<li>Press the hint button (lower-left corner) for a hint.</li>
+		<li>Press the surrender button (lower-right corner) to give up.</li>
+	</ul>
+	<p>
+		<strong>Warning:</strong> Surrendering solves the current puzzle and does not
+		count towards your historical stats. A flag icon will also appear in your share
+		message signifying that you surrendered.
+	</p>
+
+	<hr />
+
 	<p>
 		For more information about Flippin, check out the official <a
 			href="https://github.com/flippin-dev/flippin">repository</a

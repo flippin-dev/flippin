@@ -24,8 +24,13 @@ A component that presents a congratulatory message, the time until the next dail
 		timerFormat,
 	} from '$lib/time';
 	import { toastAndAlert } from '$lib/page-utilities';
+	import { findMinimalSolution } from '$lib/math';
+	import { puzzles } from '$lib/puzzles';
 
 	dayjs.extend(duration);
+
+	const { curBoard, moveCount, resetCount, hintCount, hasSurrendered } =
+		$gameDetails;
 
 	/**
 	 * Calculate the game time in seconds.
@@ -55,7 +60,6 @@ A component that presents a congratulatory message, the time until the next dail
 			storedTime > 0
 				? dayjs.duration(storedTime).format(timerFormat)
 				: maxTimeMessage;
-		const { moveCount, resetCount, curBoard } = get(gameDetails);
 
 		if (curBoard === null) {
 			toastAndAlert('Could not find board image', {
@@ -72,7 +76,7 @@ A component that presents a congratulatory message, the time until the next dail
 			output += curBoard[i] === '0' ? '🟥' : curBoard[i] === '1' ? '🟩' : '🟦';
 		}
 
-		let text = `${title}\n${output}\nTime: ${time}\nMoves: ${moveCount ?? ''}\nResets: ${resetCount ?? ''}\n\n${url}`;
+		let text = `${title}\n${output}\nTime: ${time}${hasSurrendered ? ' 🏳' : ''}\nMoves: ${moveCount ?? ''}\nResets: ${resetCount ?? ''}\nHints: ${hintCount ?? ''}\n\n${url}`;
 
 		navigator.clipboard.writeText(text).then(
 			() => toastAndAlert('Results copied to clipboard'),
@@ -82,6 +86,46 @@ A component that presents a congratulatory message, the time until the next dail
 				}),
 		);
 	}
+
+	/**
+	 * Pick an appropriate end of game message based on stats for daily game.
+	 *
+	 * @returns {string} An end of game message.
+	 */
+	function getMessage(): string {
+		const time = getTime();
+		const puzzleNumber = get(gameNumber);
+		let minimalMoves = 0;
+		if (puzzleNumber > 0 && puzzleNumber < puzzles.length + 1) {
+			const puzzle = puzzles[puzzleNumber - 1];
+			minimalMoves = findMinimalSolution(puzzle.start, puzzle.end).reduce(
+				(sum, current) => sum + current,
+				0,
+			);
+		}
+
+		if (hasSurrendered) {
+			return 'NEXT TIME!';
+		}
+
+		if (moveCount === minimalMoves && hintCount === 0) {
+			return 'PERFECT!';
+		}
+
+		if (time < 0) {
+			return 'SLOW AND STEADY!';
+		}
+
+		if (time / 1000 <= 60) {
+			return 'SPEEDY!';
+		}
+
+		if (hintCount === 0) {
+			return 'NO HELP NEEDED!';
+		}
+
+		return 'CONGRATULATIONS!';
+	}
 </script>
 
 <div
@@ -90,8 +134,22 @@ A component that presents a congratulatory message, the time until the next dail
 	class="game-over-block"
 	class:reduced-motion={$reducedMotion}
 >
-	<div role="presentation" class="congratulations">
-		<strong>Congratulations!</strong>
+	<div role="presentation" class="game-recap">
+		{#if $gameMode === 'daily'}
+			<p>
+				<strong>{getMessage()}</strong>
+			</p>
+
+			<p>Moves: {moveCount}</p>
+			<p>Resets: {resetCount}</p>
+			<p>Hints: {hintCount}</p>
+		{:else}
+			<p>
+				<strong>CONGRATULATIONS!</strong>
+			</p>
+		{/if}
+
+		<p>NEW PUZZLE IN:</p>
 	</div>
 
 	<div
@@ -131,9 +189,21 @@ A component that presents a congratulatory message, the time until the next dail
 		animation: none;
 	}
 
-	.congratulations {
-		font-size: 1.5rem;
+	.game-recap {
 		text-align: center;
+	}
+
+	.game-recap p:first-child {
+		font-size: 1.5rem;
+	}
+
+	.game-recap p:last-child {
+		font-size: 1.25rem;
+		margin-top: 10px;
+	}
+
+	.game-recap p {
+		margin: 0;
 	}
 
 	.countdown-container {

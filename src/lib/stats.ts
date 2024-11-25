@@ -10,6 +10,8 @@ export type GameDetails = {
 	lastGame: number;
 	moveCount?: number;
 	resetCount?: number;
+	hintCount?: number;
+	hasSurrendered?: boolean;
 };
 
 /** Unpopulated game details. */
@@ -19,6 +21,8 @@ export const newGameDetails: GameDetails = {
 	lastGame: 0,
 	moveCount: 0,
 	resetCount: 0,
+	hintCount: 0,
+	hasSurrendered: false,
 };
 
 /** The number of minute buckets game times should be distributed into. */

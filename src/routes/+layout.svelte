@@ -23,6 +23,7 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import StorageConsent from '$com/StorageConsent.svelte';
+	import SurrenderConsent from '$com/SurrenderConsent.svelte';
 
 	/** The dark mode theme color. */
 	const darkThemeColor = '#121212';
@@ -160,6 +161,10 @@
 
 			{#if $currentScreen === 'stats'}
 				<Stats />
+			{/if}
+
+			{#if $currentScreen === 'surrender'}
+				<SurrenderConsent />
 			{/if}
 
 			<main inert={$currentScreen !== null}>

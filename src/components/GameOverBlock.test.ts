@@ -8,7 +8,7 @@ it('Game mode is "daily"', () => {
 
 	render(GameOverBlock);
 
-	expect(screen.getByText('Congratulations!')).toBeInTheDocument();
+	expect(screen.getByText('NEW PUZZLE IN:')).toBeInTheDocument();
 
 	const shareButton = screen.getByRole('button', {
 		hidden: true,
@@ -22,7 +22,7 @@ it('Game mode is "freeplay"', () => {
 
 	render(GameOverBlock);
 
-	expect(screen.getByText('Congratulations!')).toBeInTheDocument();
+	expect(screen.getByText('NEW PUZZLE IN:')).toBeInTheDocument();
 
 	const shareButton = screen.queryByRole('button', {
 		hidden: true,

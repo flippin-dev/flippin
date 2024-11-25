@@ -78,9 +78,11 @@ button {
 	touch-action: manipulation;
 }
 
-button:hover {
-	background-color: var(--color-hover);
-	cursor: pointer;
+@media (hover: hover) and (pointer: fine) {
+	button:hover {
+		background-color: var(--color-hover);
+		cursor: pointer;
+	}
 }
 
 button:disabled {
@@ -96,6 +98,11 @@ textarea {
 	color: var(--color-text);
 	border-color: var(--color-list-border);
 	resize: none;
+}
+
+ul {
+	list-style-position: inside;
+	padding-left: 0;
 }
 
 html:has(dialog[open]) {

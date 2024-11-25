@@ -118,11 +118,20 @@ export class Game {
 	}
 
 	/**
-	 * Serialize the current game state so it can be saved to storage.
+	 * Serialize the current game state to a string.
 	 *
-	 * @returns {string} The storable game state.
+	 * @returns {string} The game state as a string.
 	 */
 	serializeCurrent(): string {
 		return this.current.toString().replaceAll(',', '');
+	}
+
+	/**
+	 * Serialize the end game state to a string.
+	 *
+	 * @returns {string} The game state as a string.
+	 */
+	serializeEnd(): string {
+		return this.end.toString().replaceAll(',', '');
 	}
 }

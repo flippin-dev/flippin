@@ -5,9 +5,17 @@ A component to confirm that Flippin data can be stored locally.
 
 <script lang="ts">
 	import Dialog from '$com/Dialog.svelte';
+	import { storageConsent } from '$src/stores/stores';
+
+	const confirmationMessage =
+		"Do you consent to allowing Flippin to use your device's local storage for the reasons listed above?";
 </script>
 
-<Dialog confirmation={true}>
+<Dialog
+	confirmation={true}
+	{confirmationMessage}
+	confirmationStore={storageConsent}
+>
 	<svelte:fragment slot="title">Local Storage Notice</svelte:fragment>
 
 	<p>

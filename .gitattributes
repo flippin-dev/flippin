@@ -1,2 +1,4 @@
 # Exclude the html files generated for the Julia code
 julia/*.html linguist-generated
+# Exclude the pdf files generated for the Julia code
+julia/*.pdf linguist-generated

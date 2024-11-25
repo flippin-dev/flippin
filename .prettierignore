@@ -12,8 +12,10 @@ pnpm-lock.yaml
 package-lock.json
 yarn.lock
 
+/img
 /julia
 /src/app.html
 /.github
+ARCHITECTURE.md
 CHANGELOG.md
 README.md
