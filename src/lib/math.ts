@@ -297,7 +297,7 @@ export function isPuzzleSolvable(start: string, end: string): boolean {
  * findMinimalSolution('1011110111112101211101210','0202002020000001000101110');
  * ```
  *
- * @returns {boolean} A vector containing the solution or an empty vector.
+ * @returns {number[]} A vector containing the solution or an empty vector.
  */
 export function findMinimalSolution(start: string, end: string): number[] {
 	const startVector = start.split('').map((e) => +e);
