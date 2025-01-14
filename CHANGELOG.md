@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Outlines of "Games Won" values on stats page applied in wrong order on some devices.
 - First "Heart" daily puzzle renamed "Favorite" so that both "Heart" puzzles appear in freeplay.
 
 ## [1.2.0] - 2024-11-25
