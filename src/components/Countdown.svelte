@@ -66,7 +66,7 @@ A component that presents a countdown until the next daily puzzle.
 
 {#if isDone && message}
 	<!-- Force a hard refresh so that the stores reinitialize -->
-	<a data-sveltekit-reload href="/">{message}</a>
+	<a data-sveltekit-reload href="/flippin/">{message}</a>
 {:else}
 	{remaining.format(countdownFormat)}
 {/if}
