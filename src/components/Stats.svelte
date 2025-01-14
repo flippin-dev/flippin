@@ -468,7 +468,8 @@ A component that presents users with game stats.
 		font-weight: 700;
 		border-radius: 8px;
 		/* this will hopefully keep the data legible regardless of theme colors */
-		-webkit-text-stroke: 0.5px var(--color-text-outline);
+		paint-order: stroke fill;
+		-webkit-text-stroke: 1px var(--color-text-outline);
 	}
 
 	.stats-buttons {
