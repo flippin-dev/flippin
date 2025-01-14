@@ -11,8 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - 42 new daily puzzles.
 
+### Changed
+
+- Updated format of share message to include star next to move count for perfect games.
+
 ### Fixed
 
+- Daily puzzle countdown link too large.
 - Homepage redirect links missing part of path.
 - Overscrolling refreshing page on some devices.
 - Outlines of "Games Won" values on stats page applied in wrong order on some devices.
