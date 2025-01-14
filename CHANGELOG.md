@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Homepage redirect links missing part of path.
 - Overscrolling refreshing page on some devices.
 - Outlines of "Games Won" values on stats page applied in wrong order on some devices.
 - First "Heart" daily puzzle renamed "Favorite" so that both "Heart" puzzles appear in freeplay.
