@@ -32,6 +32,8 @@ A component that presents a congratulatory message, the time until the next dail
 	const { curBoard, moveCount, resetCount, hintCount, hasSurrendered } =
 		$gameDetails;
 
+	let isPerfect = false;
+
 	/**
 	 * Calculate the game time in seconds.
 	 *
@@ -76,7 +78,7 @@ A component that presents a congratulatory message, the time until the next dail
 			output += curBoard[i] === '0' ? '🟥' : curBoard[i] === '1' ? '🟩' : '🟦';
 		}
 
-		let text = `${title}\n${output}\nTime: ${time}${hasSurrendered ? ' 🏳' : ''}\nMoves: ${moveCount ?? ''}\nResets: ${resetCount ?? ''}\nHints: ${hintCount ?? ''}\n\n${url}`;
+		let text = `${title}\n${output}\nTime: ${time}${hasSurrendered ? ' 🏳' : ''}\nMoves: ${moveCount ?? ''}${!hasSurrendered && isPerfect ? ' ⭐' : ''}\nResets: ${resetCount ?? ''}\nHints: ${hintCount ?? ''}\n\n${url}`;
 
 		navigator.clipboard.writeText(text).then(
 			() => toastAndAlert('Results copied to clipboard'),
@@ -109,6 +111,7 @@ A component that presents a congratulatory message, the time until the next dail
 		}
 
 		if (moveCount === minimalMoves && hintCount === 0) {
+			isPerfect = true;
 			return 'PERFECT!';
 		}
 
@@ -219,6 +222,7 @@ A component that presents a congratulatory message, the time until the next dail
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		margin-top: 10px;
 		padding: 0;
 		width: 250px;
 		height: 30px;
