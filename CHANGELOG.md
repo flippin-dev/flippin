@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- 42 new daily puzzles.
+
+### Fixed
+
+- First "Heart" daily puzzle renamed "Favorite" so that both "Heart" puzzles appear in freeplay.
+
 ## [1.2.0] - 2024-11-25
 
 ### Added
