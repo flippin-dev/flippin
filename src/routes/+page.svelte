@@ -15,6 +15,10 @@
 		needsHint,
 		hintActive,
 		shouldSurrender,
+		freeplayGameTime,
+		freeplayGameDetails,
+		shouldResetFreeplayTimer,
+		hasChangedFreeplayPuzzle,
 	} from '$src/stores/stores';
 	import Title from '$com/Title.svelte';
 	import Controls from '$com/Controls.svelte';
@@ -29,6 +33,7 @@
 	import { navigateTable } from '$lib/page-utilities';
 	import ExtraControls from '$com/ExtraControls.svelte';
 	import { findMinimalSolution } from '$lib/math';
+	import FreeplayControls from '$com/FreeplayControls.svelte';
 
 	/** The directions a tile can flip. */
 	type FlipDirections = 'up' | 'right' | 'down' | 'left' | null;
@@ -140,10 +145,16 @@
 	let isDaily = true;
 	/** The number of moves used so far in the daily puzzle. */
 	let moveCount = 0;
+	/** The number of moves used so far in the freeplay puzzle. */
+	let freeplayMoveCount = 0;
 	/** The number of resets used so far in the daily puzzle. */
 	let resetCount = 0;
+	/** The number of resets used so far in the freeplay puzzle. */
+	let freeplayResetCount = 0;
 	/** The number of hints used so far in the daily puzzle. */
 	let hintCount = 0;
+	/** The number of hints used so far in the freeplay puzzle. */
+	let freeplayHintCount = 0;
 	/** A vector containing the moves needed to solve the puzzle. */
 	let hintVector: number[] = [];
 	/** The row of the hint tile. */
@@ -152,8 +163,10 @@
 	let hintColumn = -1;
 	/** Flag for if hintVector can be reused. */
 	let hintChain = false;
-	/** Whether or not the player has surrendered. */
+	/** Whether or not the player has surrendered in the daily puzzle. */
 	let hasSurrendered = false;
+	/** Whether or not the player has surrendered in the freeplay puzzle. */
+	let hasSurrenderedFreeplay = false;
 
 	/** Subscribe to gameDetails so that it's always available for caching. */
 	$: curGameDetails = $gameDetails;
@@ -235,10 +248,9 @@
 	};
 
 	/**
-	 * Update game details store with current time and board.
+	 * Update game details store with current game information.
 	 */
 	function updateDetails() {
-		// Only update saved details during daily mode
 		if (isDaily && isMounted) {
 			gameDetails.update(() => {
 				return {
@@ -249,6 +261,18 @@
 					resetCount: resetCount,
 					hintCount: hintCount,
 					hasSurrendered: hasSurrendered,
+				};
+			});
+		} else if (!isDaily) {
+			freeplayGameDetails.update((details) => {
+				return {
+					curTime: get(freeplayGameTime),
+					curBoard: game.serializeCurrent(),
+					lastGame: details.lastGame,
+					moveCount: freeplayMoveCount,
+					resetCount: freeplayResetCount,
+					hintCount: freeplayHintCount,
+					hasSurrendered: hasSurrenderedFreeplay,
 				};
 			});
 		}
@@ -272,6 +296,8 @@
 
 		if ($gameMode === 'daily') {
 			moveCount++;
+		} else {
+			freeplayMoveCount++;
 		}
 
 		if ($hintActive) {
@@ -337,8 +363,33 @@
 			resetCount++;
 			game = new Game();
 		} else {
-			hasWonFreeplay.set(false);
 			game = new Game('', get(freeplayPuzzle) ?? freeplayExample);
+
+			if (get(hasWonFreeplay) || get(hasChangedFreeplayPuzzle)) {
+				hasWonFreeplay.set(false);
+				hasChangedFreeplayPuzzle.set(false);
+
+				freeplayMoveCount = 0;
+				freeplayResetCount = 0;
+				freeplayHintCount = 0;
+				hasSurrenderedFreeplay = false;
+
+				freeplayGameTime.set(0);
+				shouldResetFreeplayTimer.set(true);
+				freeplayGameDetails.update(() => {
+					return {
+						curTime: 0,
+						curBoard: game.serializeCurrent(),
+						lastGame: 0, // No need to track this
+						moveCount: 0,
+						resetCount: 0,
+						hintCount: 0,
+						hasSurrendered: false,
+					};
+				});
+			} else {
+				freeplayResetCount++;
+			}
 		}
 
 		// Clear last move to trigger rerender without animation
@@ -386,7 +437,11 @@
 		lastRow = -1;
 		lastColumn = -1;
 
-		hintCount++;
+		if (isDaily) {
+			hintCount++;
+		} else {
+			freeplayHintCount++;
+		}
 		updateDetails();
 	}
 
@@ -405,6 +460,8 @@
 			hasSurrendered = true;
 		} else {
 			hasWonFreeplay.set(true);
+			// Set surrender flag
+			hasSurrenderedFreeplay = true;
 		}
 
 		// Clear last move to trigger rerender without animation
@@ -479,7 +536,27 @@
 			hasSurrendered = false;
 
 			hasWonFreeplay.set(false);
+
+			freeplayMoveCount = 0;
+			freeplayResetCount = 0;
+			freeplayHintCount = 0;
+			hasSurrenderedFreeplay = false;
+
+			freeplayGameTime.set(0);
+			freeplayGameDetails.update(() => {
+				return {
+					curTime: 0,
+					curBoard: game.serializeCurrent(), // This will not be updated
+					lastGame: 0, // No need to track this
+					moveCount: 0,
+					resetCount: 0,
+					hintCount: 0,
+					hasSurrendered: false,
+				};
+			});
+
 			game = new Game('', $freeplayPuzzle ?? freeplayExample);
+
 			isDaily = false;
 		}
 	}
@@ -505,34 +582,44 @@
 {:else}
 	<Title />
 
-	<div
-		role="region"
-		aria-label="end state of game board"
-		class="region-container"
-	>
+	<div class="upper-region-container">
+		<div role="presentation" class="controls-placeholder" />
+
 		<div
-			role="table"
-			class="board reference-board"
-			aria-label="reference game board"
+			role="region"
+			aria-label="end state of game board"
+			class="region-container"
 		>
-			{#each Array.from(Array(boardSize).keys()) as row (row)}
-				<div role="row" class="row" style:--numColumns={boardSize}>
-					{#each Array.from(Array(boardSize).keys()) as column (column)}
-						{@const color1 = game.end[row]?.[column] === 0}
-						{@const color2 = game.end[row]?.[column] === 1}
-						{@const color3 = game.end[row]?.[column] === 2}
-						<div
-							class="tile"
-							class:color1
-							class:color2
-							class:color3
-							role="cell"
-							aria-label={`${color1 === true ? 'color 1' : color2 === true ? 'color 2' : 'color 3'}`}
-						/>
-					{/each}
-				</div>
-			{/each}
+			<div
+				role="table"
+				class="board reference-board"
+				aria-label="reference game board"
+			>
+				{#each Array.from(Array(boardSize).keys()) as row (row)}
+					<div role="row" class="row" style:--numColumns={boardSize}>
+						{#each Array.from(Array(boardSize).keys()) as column (column)}
+							{@const color1 = game.end[row]?.[column] === 0}
+							{@const color2 = game.end[row]?.[column] === 1}
+							{@const color3 = game.end[row]?.[column] === 2}
+							<div
+								class="tile"
+								class:color1
+								class:color2
+								class:color3
+								role="cell"
+								aria-label={`${color1 === true ? 'color 1' : color2 === true ? 'color 2' : 'color 3'}`}
+							/>
+						{/each}
+					</div>
+				{/each}
+			</div>
 		</div>
+
+		{#if $gameMode === 'daily'}
+			<div role="presentation" class="controls-placeholder" />
+		{:else}
+			<FreeplayControls />
+		{/if}
 	</div>
 
 	<Controls />
@@ -680,9 +767,20 @@
 		filter: brightness(0.5);
 	}
 
+	.upper-region-container {
+		align-self: center;
+		display: flex;
+		width: 280px;
+		justify-content: space-between;
+	}
+
 	.region-container {
 		align-self: center;
 		display: flex;
+	}
+
+	.controls-placeholder {
+		width: 36px;
 	}
 
 	@keyframes win-flip {

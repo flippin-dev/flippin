@@ -5,7 +5,7 @@ import { colorRegEx, defaultThemesMap } from '$lib/themes';
 import { puzzles, freeplayExample, testPuzzle } from '$lib/puzzles';
 import { isPuzzleSolvable } from '$lib/math';
 import type { Puzzle, SerializedPuzzle } from '$lib/puzzles';
-import { derived, writable } from 'svelte/store';
+import { derived, get, writable } from 'svelte/store';
 import type { Readable, Writable } from 'svelte/store';
 import { stateRegEx } from '$lib/game';
 import { getDaysFromStart } from '$lib/time';
@@ -21,6 +21,8 @@ export const customPrefix = 'CSTM-';
 export const hasWon: Writable<boolean> = writable(false);
 /** Whether or not the freeplay puzzle has been won. */
 export const hasWonFreeplay: Writable<boolean> = writable(false);
+/** Whether or not the freeplay puzzle has been changed to another freeplay puzzle. */
+export const hasChangedFreeplayPuzzle: Writable<boolean> = writable(false);
 /** Whether or not the game has been surrendered. */
 export const shouldSurrender: Writable<boolean> = writable(false);
 /** Whether or not a hint is needed. */
@@ -29,10 +31,14 @@ export const needsHint: Writable<boolean> = writable(false);
 export const hintActive: Writable<boolean> = writable(false);
 /** Whether or not a board reset is needed. */
 export const shouldReset: Writable<boolean> = writable(false);
+/** Whether or not the freeplay timer should be reset. */
+export const shouldResetFreeplayTimer: Writable<boolean> = writable(false);
 /** Whether or not the last tile pressed needs to be focused on again. */
 export const shouldRefocus: Writable<boolean> = writable(false);
 /** The game timer for daily mode. */
 export const gameTime: Writable<number> = writable(0);
+/** The game timer for freeplay mode. */
+export const freeplayGameTime: Writable<number> = writable(0);
 /** The screen being displayed. */
 export const currentScreen: Writable<
 	null | 'tutorial' | 'settings' | 'stats' | 'surrender'
@@ -122,6 +128,10 @@ export const stats: Writable<Stats> = locallyPersistable(
 	newStats,
 );
 
+/** Freeplay game details. */
+export const freeplayGameDetails: Writable<GameDetails> =
+	writable(newGameDetails);
+
 /** Saved dark mode selection. */
 export const darkMode: Writable<boolean> = locallyPersistable(
 	storageConsent,
@@ -203,6 +213,12 @@ export const freeplayPuzzles: Readable<Map<string, Puzzle>> = derived(
 				continue;
 			}
 
+			// Validate that puzzle start and end are different
+			if (start === end) {
+				console.warn(`"${title}" is too easy`);
+				continue;
+			}
+
 			// Validate that puzzle is solvable
 			if (!isPuzzleSolvable(start, end)) {
 				console.warn(`${title} is not solvable`);
@@ -219,4 +235,19 @@ export const freeplayPuzzles: Readable<Map<string, Puzzle>> = derived(
 
 		return puzzlesMap;
 	},
+);
+
+/** Easily indexable freeplay puzzles. */
+export const freeplayPuzzlesArray: Readable<string[]> = derived(
+	freeplayPuzzles,
+	($freeplayPuzzles) => {
+		return Array.from($freeplayPuzzles.keys());
+	},
+);
+
+/** The current position in the freeplay puzzles array. */
+export const freeplayPuzzlesIndex: Writable<number> = writable(
+	get(gameNumber) > 0 && get(gameNumber) < puzzles.length + 1
+		? get(gameNumber) - 1
+		: puzzles.length,
 );

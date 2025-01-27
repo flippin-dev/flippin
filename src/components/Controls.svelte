@@ -13,9 +13,13 @@ A component that holds various control buttons as well as the game timer.
 	} from '$src/stores/stores';
 	import { maxTime, maxTimeMessage } from '$lib/time';
 	import { navigateToolbar } from '$lib/page-utilities';
+	import RestartableTimer from './RestartableTimer.svelte';
 
 	/** A binding for the toolbar element. */
 	let toolbar: HTMLElement;
+
+	// Prevent double touch from triggering an additional click event
+	let touchResetActive = false;
 
 	$: isWonAndDaily = $hasWon && $gameMode === 'daily';
 </script>
@@ -23,6 +27,7 @@ A component that holds various control buttons as well as the game timer.
 <div
 	bind:this={toolbar}
 	data-toolbar-size={isWonAndDaily ? 3 : 4}
+	data-toolbar-direction="horizontal"
 	role="toolbar"
 	aria-controls="game-board"
 	aria-label="game controls"
@@ -85,6 +90,8 @@ A component that holds various control buttons as well as the game timer.
 	<div role="timer" aria-label="game timer" class="timer-container">
 		{#if $gameMode === 'daily'}
 			<Timer interval={maxTime} message={maxTimeMessage} />
+		{:else}
+			<RestartableTimer interval={maxTime} message={maxTimeMessage} />
 		{/if}
 	</div>
 
@@ -112,11 +119,20 @@ A component that holds various control buttons as well as the game timer.
 		title="Reset the board"
 		data-toolbar-pos="3"
 		on:click={() => {
+			if (!touchResetActive) {
+				if (!isWonAndDaily) {
+					shouldReset.set(true);
+				}
+			}
+		}}
+		on:keydown={(event) => navigateToolbar(event, toolbar)}
+		on:touchstart|preventDefault={() => {
+			touchResetActive = true;
 			if (!isWonAndDaily) {
 				shouldReset.set(true);
 			}
 		}}
-		on:keydown={(event) => navigateToolbar(event, toolbar)}
+		on:touchend={() => (touchResetActive = false)}
 		disabled={isWonAndDaily}
 		aria-disabled={isWonAndDaily}
 	>

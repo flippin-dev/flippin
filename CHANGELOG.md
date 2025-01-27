@@ -9,14 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Navigation buttons in freeplay mode to quickly change the puzzle.
+- Random puzzle button next to freeplay puzzle select list.
+- Button to start a random freeplay puzzle under daily puzzle recap details.
+- Freeplay puzzle recap details.
 - 42 new daily puzzles.
 
 ### Changed
 
+- Updated README and ARCHITECTURE files with new freeplay info and images.
 - Updated format of share message to include star next to move count for perfect games.
 
 ### Fixed
 
+- Double tap triggering extra click on reset button.
+- Custom puzzles requiring no moves to solve could be imported.
 - Daily puzzle countdown link too large.
 - Homepage redirect links missing part of path.
 - Overscrolling refreshing page on some devices.
