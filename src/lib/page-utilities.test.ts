@@ -9,9 +9,13 @@ import { shouldRefocus } from '$src/stores/stores';
 import { get } from 'svelte/store';
 
 const sampleHTML = `<div id="hidden-alert-container"></div>
-<div id="toolbar" data-toolbar-size="2">
-	<button id="toolbar0" data-toolbar-pos="0"></button>
-	<button id="toolbar1" data-toolbar-pos="1"></button>
+<div id="toolbarH" data-toolbar-size="2" data-toolbar-direction="horizontal">
+	<button id="toolbarH0" data-toolbar-pos="0"></button>
+	<button id="toolbarH1" data-toolbar-pos="1"></button>
+</div>
+<div id="toolbarV" data-toolbar-size="2" data-toolbar-direction="vertical">
+	<button id="toolbarV0" data-toolbar-pos="0"></button>
+	<button id="toolbarV1" data-toolbar-pos="1"></button>
 </div>
 <div id="table" data-table-rows="2" data-table-cols="2">
 	<div id="row0">
@@ -75,66 +79,145 @@ describe('Toast and alert', () => {
 });
 
 describe('Navigate toolbar', () => {
-	const toolbar = document.getElementById('toolbar') as HTMLElement;
-	const toolbar0 = document.getElementById('toolbar0') as HTMLElement;
-	const toolbar1 = document.getElementById('toolbar1') as HTMLElement;
+	describe('Navigate horizontal toolbar', () => {
+		const toolbar = document.getElementById('toolbarH') as HTMLElement;
+		const toolbar0 = document.getElementById('toolbarH0') as HTMLElement;
+		const toolbar1 = document.getElementById('toolbarH1') as HTMLElement;
 
-	function handleToolbar(e: KeyboardEvent) {
-		navigateToolbar(e, toolbar);
-	}
+		function handleToolbar(e: KeyboardEvent) {
+			navigateToolbar(e, toolbar);
+		}
 
-	toolbar0.onkeydown = handleToolbar;
-	toolbar1.onkeydown = handleToolbar;
+		toolbar0.onkeydown = handleToolbar;
+		toolbar1.onkeydown = handleToolbar;
 
-	beforeEach(() => {
-		(document.activeElement as HTMLElement).blur();
-	});
-
-	it('Move right', () => {
-		toolbar0?.focus();
-
-		expect(document.activeElement).toBe(toolbar0);
-
-		toolbar0.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
-
-		vi.waitFor(() => {
-			expect(document.activeElement).toBe(toolbar1);
+		beforeEach(() => {
+			(document.activeElement as HTMLElement).blur();
 		});
-	});
 
-	it('Move left', () => {
-		toolbar1?.focus();
+		it('Move right', () => {
+			toolbar0?.focus();
 
-		expect(document.activeElement).toBe(toolbar1);
-
-		toolbar1.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
-
-		vi.waitFor(() => {
 			expect(document.activeElement).toBe(toolbar0);
+
+			toolbar0.dispatchEvent(
+				new KeyboardEvent('keydown', { key: 'ArrowRight' }),
+			);
+
+			vi.waitFor(() => {
+				expect(document.activeElement).toBe(toolbar1);
+			});
 		});
-	});
 
-	it('Move right and wrap', () => {
-		toolbar1?.focus();
+		it('Move left', () => {
+			toolbar1?.focus();
 
-		expect(document.activeElement).toBe(toolbar1);
-
-		toolbar1.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
-
-		vi.waitFor(() => {
-			expect(document.activeElement).toBe(toolbar0);
-		});
-	});
-
-	it('Move left and wrap', () => {
-		toolbar0?.focus();
-
-		expect(document.activeElement).toBe(toolbar0);
-
-		toolbar0.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
-
-		vi.waitFor(() => {
 			expect(document.activeElement).toBe(toolbar1);
+
+			toolbar1.dispatchEvent(
+				new KeyboardEvent('keydown', { key: 'ArrowLeft' }),
+			);
+
+			vi.waitFor(() => {
+				expect(document.activeElement).toBe(toolbar0);
+			});
+		});
+
+		it('Move right and wrap', () => {
+			toolbar1?.focus();
+
+			expect(document.activeElement).toBe(toolbar1);
+
+			toolbar1.dispatchEvent(
+				new KeyboardEvent('keydown', { key: 'ArrowRight' }),
+			);
+
+			vi.waitFor(() => {
+				expect(document.activeElement).toBe(toolbar0);
+			});
+		});
+
+		it('Move left and wrap', () => {
+			toolbar0?.focus();
+
+			expect(document.activeElement).toBe(toolbar0);
+
+			toolbar0.dispatchEvent(
+				new KeyboardEvent('keydown', { key: 'ArrowLeft' }),
+			);
+
+			vi.waitFor(() => {
+				expect(document.activeElement).toBe(toolbar1);
+			});
+		});
+	});
+
+	describe('Navigate vertical toolbar', () => {
+		const toolbar = document.getElementById('toolbarV') as HTMLElement;
+		const toolbar0 = document.getElementById('toolbarV0') as HTMLElement;
+		const toolbar1 = document.getElementById('toolbarV1') as HTMLElement;
+
+		function handleToolbar(e: KeyboardEvent) {
+			navigateToolbar(e, toolbar);
+		}
+
+		toolbar0.onkeydown = handleToolbar;
+		toolbar1.onkeydown = handleToolbar;
+
+		beforeEach(() => {
+			(document.activeElement as HTMLElement).blur();
+		});
+
+		it('Move down', () => {
+			toolbar0?.focus();
+
+			expect(document.activeElement).toBe(toolbar0);
+
+			toolbar0.dispatchEvent(
+				new KeyboardEvent('keydown', { key: 'ArrowDown' }),
+			);
+
+			vi.waitFor(() => {
+				expect(document.activeElement).toBe(toolbar1);
+			});
+		});
+
+		it('Move up', () => {
+			toolbar1?.focus();
+
+			expect(document.activeElement).toBe(toolbar1);
+
+			toolbar1.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
+
+			vi.waitFor(() => {
+				expect(document.activeElement).toBe(toolbar0);
+			});
+		});
+
+		it('Move down and wrap', () => {
+			toolbar1?.focus();
+
+			expect(document.activeElement).toBe(toolbar1);
+
+			toolbar1.dispatchEvent(
+				new KeyboardEvent('keydown', { key: 'ArrowDown' }),
+			);
+
+			vi.waitFor(() => {
+				expect(document.activeElement).toBe(toolbar0);
+			});
+		});
+
+		it('Move up and wrap', () => {
+			toolbar0?.focus();
+
+			expect(document.activeElement).toBe(toolbar0);
+
+			toolbar0.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
+
+			vi.waitFor(() => {
+				expect(document.activeElement).toBe(toolbar1);
+			});
 		});
 	});
 });

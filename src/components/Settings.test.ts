@@ -516,6 +516,31 @@ describe('Freeplay', () => {
 		expect(get(gameMode)).toBe('freeplay');
 	});
 
+	it('Select random freeplay puzzle', async () => {
+		const user = userEvent.setup();
+		const freeplayPuzzleSpy = vi.spyOn(freeplayPuzzle, 'set');
+		// Set a dummy puzzle to clear out the default to make finding the list item below easier
+		freeplayPuzzle.set({ title: '', start: '', end: '' });
+		gameMode.set('daily');
+		shouldReset.set(false);
+
+		render(Settings);
+
+		await user.click(
+			screen.getByRole('switch', { hidden: true, name: 'freeplay' }),
+		);
+
+		const randomButton = screen.getByRole('button', {
+			hidden: true,
+			name: 'Random puzzle',
+		});
+
+		await user.click(randomButton);
+
+		expect(freeplayPuzzleSpy).toHaveBeenCalledTimes(2);
+		expect(get(freeplayPuzzle).title).not.toBe('');
+	});
+
 	it('Update freeplay puzzle', async () => {
 		const user = userEvent.setup();
 		const freeplayPuzzleSpy = vi.spyOn(freeplayPuzzle, 'set');
@@ -768,6 +793,44 @@ describe('Custom puzzles', () => {
 				expect(status).toHaveTextContent(
 					'end value for "Sample" does not match expected pattern!',
 				);
+				expect(importButton).toBeDisabled();
+			});
+
+			it('Too easy puzzle', async () => {
+				const user = userEvent.setup();
+
+				render(Settings);
+
+				const importSectionButton = screen.getByRole('button', {
+					hidden: true,
+					name: 'Import Custom Puzzles',
+				});
+
+				await user.click(importSectionButton);
+
+				const importButton = screen.getByRole('button', {
+					hidden: true,
+					name: 'Import Puzzles',
+				});
+				expect(importButton).toBeDisabled();
+
+				const status = screen.getByRole('status', {
+					hidden: true,
+					name: 'custom puzzle import status message',
+				});
+				expect(status).toHaveTextContent('Paste your custom puzzles here!');
+
+				const textbox = screen.getByRole('textbox', {
+					hidden: true,
+					name: 'custom puzzle import',
+				});
+
+				await user.click(textbox);
+				await user.paste(
+					'[{"title":"Sample","start":"0011110111112101211101210","end":"0011110111112101211101210"}]',
+				);
+
+				expect(status).toHaveTextContent('"Sample" is too easy!');
 				expect(importButton).toBeDisabled();
 			});
 

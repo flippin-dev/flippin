@@ -15,6 +15,12 @@ it('Game mode is "daily"', () => {
 		name: 'copy game results to clipboard',
 	});
 	expect(shareButton).toBeInTheDocument();
+
+	const randomButton = screen.getByRole('button', {
+		hidden: true,
+		name: 'start random freeplay puzzle',
+	});
+	expect(randomButton).toBeInTheDocument();
 });
 
 it('Game mode is "freeplay"', () => {
@@ -28,5 +34,11 @@ it('Game mode is "freeplay"', () => {
 		hidden: true,
 		name: 'copy game results to clipboard',
 	});
-	expect(shareButton).not.toBeInTheDocument();
+	expect(shareButton).toBeInTheDocument();
+
+	const randomButton = screen.queryByRole('button', {
+		hidden: true,
+		name: 'start random freeplay puzzle',
+	});
+	expect(randomButton).not.toBeInTheDocument();
 });
