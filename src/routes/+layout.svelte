@@ -7,7 +7,10 @@
 		darkMode,
 		freeplayPuzzle,
 		freeplayPuzzles,
+		freeplayPuzzlesArray,
+		freeplayPuzzlesIndex,
 		gameMode,
+		hasChangedFreeplayPuzzle,
 		reducedMotion,
 		shouldReset,
 		storageConsent,
@@ -93,6 +96,12 @@
 		!$freeplayPuzzles.has($freeplayPuzzle.title)
 	) {
 		freeplayPuzzle.set(freeplayExample);
+		freeplayPuzzlesIndex.set(
+			get(freeplayPuzzlesArray).findIndex(
+				(title) => title === freeplayExample.title,
+			),
+		);
+		hasChangedFreeplayPuzzle.set(true);
 		shouldReset.set(true);
 	}
 

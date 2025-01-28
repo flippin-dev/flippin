@@ -38,7 +38,7 @@ export function toastAndAlert(message: string, toastOptions?: any) {
  * Allows users to horizontally navigate through a toolbar using the arrow keys.
  *
  * @param {KeyboardEvent} event   The triggering event on an element which has the `data-toolbar-pos` property set.
- * @param {HTMLElement}   toolbar The parent container which has the `data-toolbar-size` property set.
+ * @param {HTMLElement}   toolbar The parent container which has the `data-toolbar-size` and `data-toolbar-direction` properties set.
  */
 export function navigateToolbar(event: KeyboardEvent, toolbar: HTMLElement) {
 	if (browser) {
@@ -65,13 +65,34 @@ export function navigateToolbar(event: KeyboardEvent, toolbar: HTMLElement) {
 				return;
 			}
 
-			switch (event.key) {
-				case 'ArrowLeft':
-					nextPos = mod(nextPos - 1, +size);
-					break;
-				case 'ArrowRight':
-					nextPos = (nextPos + 1) % +size;
-					break;
+			const direction = toolbar.dataset.toolbarDirection;
+
+			if (direction === undefined) {
+				return;
+			}
+
+			if (direction === 'horizontal') {
+				switch (event.key) {
+					case 'ArrowLeft':
+						event.preventDefault();
+						nextPos = mod(nextPos - 1, +size);
+						break;
+					case 'ArrowRight':
+						event.preventDefault();
+						nextPos = (nextPos + 1) % +size;
+						break;
+				}
+			} else {
+				switch (event.key) {
+					case 'ArrowUp':
+						event.preventDefault();
+						nextPos = mod(nextPos - 1, +size);
+						break;
+					case 'ArrowDown':
+						event.preventDefault();
+						nextPos = (nextPos + 1) % +size;
+						break;
+				}
 			}
 
 			(

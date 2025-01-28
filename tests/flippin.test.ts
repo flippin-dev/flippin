@@ -141,7 +141,6 @@ test('Hint', async ({ page }) => {
 	await page.getByTestId('row0-col3').dblclick();
 	await page.getByTestId('row1-col0').dblclick();
 	await page.getByTestId('row1-col3').dblclick();
-	// await page.getByTestId('row3-col0').dblclick();
 
 	const upperLeftTile = page.getByTestId('row0-col0');
 	const hintTile = page.getByTestId('row3-col0');

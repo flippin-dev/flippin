@@ -123,13 +123,17 @@ Saved custom color themes can be exported by clicking the **Export Custom Themes
 
 Toggling on freeplay mode will pause the daily puzzle and load the currently set freeplay puzzle. Toggling freeplay mode off returns to the saved daily puzzle.
 
-Freeplay puzzles can be selected from a dropdown list. Past daily puzzles are listed under the **DAILY** heading while custom puzzles are listed under the **CUSTOM** heading. Selecting a new puzzle erases any progress on the current freeplay puzzle.
+Freeplay puzzles can be selected from a dropdown list or randomly selected by pressing the dice button. Past daily puzzles are listed under the **DAILY** heading while custom puzzles are listed under the **CUSTOM** heading. Selecting a new puzzle erases any progress on the current freeplay puzzle.
 
 ![Freeplay mode is good for practicing past puzzles.](/img/freeplay.png "More puzzles to play")
 
-Time is not tracked in freeplay mode and there is no share button provided after winning. After winning in freeplay mode, the reset button remains enabled.
+Stats are **NOT** impacted while in freeplay mode; however, game details are still shown upon puzzle completion.
 
-Stats are **NOT** impacted while in freeplay mode.
+The reference board area is slightly different in freeplay mode. To the right of the reference board are three buttons that allow you to quickly change the freeplay puzzle. The top button selects a random puzzle, the middle button selects the previous puzzle in the freeplay list, and the bottom button selects the next puzzle in the freeplay list.
+
+![Freeplay mode buttons allow you to quickly change the freeplay puzzle.](/img/freeplay-controls.png "No need to open settings")
+
+After winning in freeplay mode, the reset button remains enabled.
 
 Custom puzzles can be added by clicking the **Import Custom Puzzles** button and following the instructions listed. They will then show up in the freeplay puzzles list after being imported. A sample puzzle is provided to better demonstrate the expected import format.
 

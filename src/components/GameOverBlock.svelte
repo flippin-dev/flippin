@@ -6,7 +6,14 @@ A component that presents a congratulatory message, the time until the next dail
 <script lang="ts">
 	import Countdown from '$com/Countdown.svelte';
 	import {
+		customPrefix,
 		dailyTitle,
+		freeplayGameDetails,
+		freeplayGameTime,
+		freeplayPuzzle,
+		freeplayPuzzles,
+		freeplayPuzzlesArray,
+		freeplayPuzzlesIndex,
 		gameDetails,
 		gameMode,
 		gameNumber,
@@ -25,12 +32,26 @@ A component that presents a congratulatory message, the time until the next dail
 	} from '$lib/time';
 	import { toastAndAlert } from '$lib/page-utilities';
 	import { findMinimalSolution } from '$lib/math';
-	import { puzzles } from '$lib/puzzles';
+	import { freeplayExample, puzzles } from '$lib/puzzles';
 
 	dayjs.extend(duration);
 
-	const { curBoard, moveCount, resetCount, hintCount, hasSurrendered } =
-		$gameDetails;
+	let { curBoard, moveCount, resetCount, hintCount, hasSurrendered } =
+		get(gameDetails);
+
+	$: if ($gameMode === 'daily') {
+		({ curBoard, moveCount, resetCount, hintCount, hasSurrendered } =
+			$gameDetails);
+	}
+
+	$: if ($gameMode === 'freeplay') {
+		({ curBoard, moveCount, resetCount, hintCount, hasSurrendered } =
+			$freeplayGameDetails);
+	}
+
+	let isPerfect = false;
+	// Update values going from freeplay back to daily
+	$: gameMessage = getMessage($gameMode);
 
 	/**
 	 * Calculate the game time in seconds.
@@ -38,7 +59,8 @@ A component that presents a congratulatory message, the time until the next dail
 	 * @returns {number} The game time in seconds or -1 if greater than or equal to the max time.
 	 */
 	function getTime(): number {
-		const time = get(gameTime);
+		const time =
+			get(gameMode) === 'daily' ? get(gameTime) : get(freeplayGameTime);
 
 		if (time / 1000 >= maxTime) {
 			return -1;
@@ -48,12 +70,36 @@ A component that presents a congratulatory message, the time until the next dail
 	}
 
 	/**
+	 * Removes the custom puzzle prefix from a puzzle title if applicable.
+	 *
+	 * @param {string} title The title of the puzzle.
+	 *
+	 * @example
+	 * ```ts
+	 * // returns 'Hello, Flippin!'
+	 * removeCustomPrefix("CSTM-Hello, Flippin!");
+	 * ```
+	 *
+	 * @returns {string} The title of the puzzle without the custom prefix.
+	 */
+	function removeCustomPrefix(title: string): string {
+		if (title.startsWith(customPrefix)) {
+			return title.substring(customPrefix.length);
+		}
+		return title;
+	}
+
+	/**
 	 * Copies a sharable summary of the game to the clipboard.
 	 *
 	 * @returns {void}
 	 */
 	function share(): void {
-		const title = `Flippin #${get(gameNumber)}: ${get(dailyTitle)}`;
+		const subtitle =
+			get(gameMode) === 'daily'
+				? `#${get(gameNumber)}: ${get(dailyTitle)}`
+				: removeCustomPrefix(get(freeplayPuzzle).title);
+		const title = `Flippin ${subtitle}`;
 		const url = 'https://flippin-dev.github.io/flippin/';
 		const storedTime = getTime();
 		const time =
@@ -76,7 +122,7 @@ A component that presents a congratulatory message, the time until the next dail
 			output += curBoard[i] === '0' ? '🟥' : curBoard[i] === '1' ? '🟩' : '🟦';
 		}
 
-		let text = `${title}\n${output}\nTime: ${time}${hasSurrendered ? ' 🏳' : ''}\nMoves: ${moveCount ?? ''}\nResets: ${resetCount ?? ''}\nHints: ${hintCount ?? ''}\n\n${url}`;
+		let text = `${title}\n${output}\nTime: ${time}${hasSurrendered ? ' 🏳' : ''}\nMoves: ${moveCount ?? ''}${!hasSurrendered && isPerfect ? ' ⭐' : ''}\nResets: ${resetCount ?? ''}\nHints: ${hintCount ?? ''}\n\n${url}`;
 
 		navigator.clipboard.writeText(text).then(
 			() => toastAndAlert('Results copied to clipboard'),
@@ -90,25 +136,40 @@ A component that presents a congratulatory message, the time until the next dail
 	/**
 	 * Pick an appropriate end of game message based on stats for daily game.
 	 *
+	 * @param {string} mode The game mode.
+	 *
 	 * @returns {string} An end of game message.
 	 */
-	function getMessage(): string {
+	function getMessage(mode: string): string {
 		const time = getTime();
-		const puzzleNumber = get(gameNumber);
+
 		let minimalMoves = 0;
-		if (puzzleNumber > 0 && puzzleNumber < puzzles.length + 1) {
-			const puzzle = puzzles[puzzleNumber - 1];
+		if (mode === 'daily') {
+			const puzzleNumber = get(gameNumber);
+
+			if (puzzleNumber > 0 && puzzleNumber < puzzles.length + 1) {
+				const puzzle = puzzles[puzzleNumber - 1];
+				minimalMoves = findMinimalSolution(puzzle.start, puzzle.end).reduce(
+					(sum, current) => sum + current,
+					0,
+				);
+			}
+		} else {
+			const puzzle = get(freeplayPuzzle);
 			minimalMoves = findMinimalSolution(puzzle.start, puzzle.end).reduce(
 				(sum, current) => sum + current,
 				0,
 			);
 		}
 
+		isPerfect = false;
+
 		if (hasSurrendered) {
 			return 'NEXT TIME!';
 		}
 
 		if (moveCount === minimalMoves && hintCount === 0) {
+			isPerfect = true;
 			return 'PERFECT!';
 		}
 
@@ -126,6 +187,33 @@ A component that presents a congratulatory message, the time until the next dail
 
 		return 'CONGRATULATIONS!';
 	}
+
+	let randomFreeplayHandler = () => {
+		// Select a random puzzle
+		freeplayPuzzlesIndex.set(
+			Math.floor(Math.random() * $freeplayPuzzlesArray.length),
+		);
+
+		// Similar process to puzzle selection in settings
+		const title = $freeplayPuzzlesArray[$freeplayPuzzlesIndex];
+		const puzzle = $freeplayPuzzles.get(title);
+		const serializedPuzzle = puzzle
+			? { title: title, start: puzzle.start, end: puzzle.end }
+			: freeplayExample;
+
+		freeplayPuzzle.set(serializedPuzzle);
+
+		// Fallback index in case the puzzle can't be found for some reason
+		if (puzzle === undefined) {
+			freeplayPuzzlesIndex.set(
+				get(freeplayPuzzlesArray).findIndex(
+					(title) => title === freeplayExample.title,
+				),
+			);
+		}
+
+		gameMode.set('freeplay');
+	};
 </script>
 
 <div
@@ -135,22 +223,25 @@ A component that presents a congratulatory message, the time until the next dail
 	class:reduced-motion={$reducedMotion}
 >
 	<div role="presentation" class="game-recap">
-		{#if $gameMode === 'daily'}
-			<p>
-				<strong>{getMessage()}</strong>
-			</p>
+		<p>
+			<strong>{gameMessage}</strong>
+		</p>
 
-			<p>Moves: {moveCount}</p>
-			<p>Resets: {resetCount}</p>
-			<p>Hints: {hintCount}</p>
-		{:else}
-			<p>
-				<strong>CONGRATULATIONS!</strong>
-			</p>
-		{/if}
-
-		<p>NEW PUZZLE IN:</p>
+		<p>Moves: {moveCount}</p>
+		<p>Resets: {resetCount}</p>
+		<p>Hints: {hintCount}</p>
 	</div>
+
+	<button
+		class="share-button"
+		title="Copy results to clipboard"
+		on:click={share}
+		aria-label="copy game results to clipboard"
+	>
+		Share
+	</button>
+
+	<p class="label-text">NEW PUZZLE IN:</p>
 
 	<div
 		role="timer"
@@ -161,12 +252,14 @@ A component that presents a congratulatory message, the time until the next dail
 	</div>
 
 	{#if $gameMode === 'daily'}
+		<p class="label-text">OR TRY FREEPLAY!</p>
+
 		<button
-			title="Copy results to clipboard"
-			on:click={share}
-			aria-label="copy game results to clipboard"
+			title="Start random freeplay puzzle"
+			on:click={randomFreeplayHandler}
+			aria-label="start random freeplay puzzle"
 		>
-			Share
+			Play
 		</button>
 	{/if}
 </div>
@@ -197,9 +290,10 @@ A component that presents a congratulatory message, the time until the next dail
 		font-size: 1.5rem;
 	}
 
-	.game-recap p:last-child {
+	.label-text {
 		font-size: 1.25rem;
 		margin-top: 10px;
+		margin-bottom: 0;
 	}
 
 	.game-recap p {
@@ -225,6 +319,11 @@ A component that presents a congratulatory message, the time until the next dail
 		border-radius: 5px;
 		border: 3px solid var(--color-border);
 		font-size: 1.5rem;
+	}
+
+	.share-button {
+		margin-top: 10px;
+		margin-bottom: 5px;
 	}
 
 	@keyframes flip-reveal {

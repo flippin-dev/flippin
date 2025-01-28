@@ -222,7 +222,7 @@
 
 	<div class="return-container">
 		<!-- Force a hard refresh so that the stores reinitialize -->
-		<a data-sveltekit-reload href="/" aria-label="return to homepage"
+		<a data-sveltekit-reload href="/flippin/" aria-label="return to homepage"
 			><strong role="presentation">Take me home!</strong></a
 		>
 	</div>

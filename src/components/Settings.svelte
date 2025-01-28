@@ -14,7 +14,10 @@ A component that presents users with various game settings.
 		darkMode,
 		freeplayPuzzle,
 		freeplayPuzzles,
+		freeplayPuzzlesArray,
+		freeplayPuzzlesIndex,
 		gameMode,
+		hasChangedFreeplayPuzzle,
 		reducedMotion,
 		shouldReset,
 		storageNoticeVisible,
@@ -237,6 +240,11 @@ A component that presents users with various game settings.
 					];
 				}
 
+				// Validate that puzzle start and end are different
+				if (start === end) {
+					return [false, `"${title}" is too easy!`];
+				}
+
 				// Validate that puzzle is solvable
 				if (!isPuzzleSolvable(start, end)) {
 					return [false, `"${title}" is not solvable!`];
@@ -400,6 +408,36 @@ A component that presents users with various game settings.
 				}),
 		);
 	}
+
+	// For random freeplay puzzle button
+	let touchRandomActive = false;
+	let randomPuzzleHandler = () => {
+		// Select a random puzzle
+		freeplayPuzzlesIndex.set(
+			Math.floor(Math.random() * $freeplayPuzzlesArray.length),
+		);
+
+		// Similar process to puzzle selection in settings
+		const title = $freeplayPuzzlesArray[$freeplayPuzzlesIndex];
+		const puzzle = $freeplayPuzzles.get(title);
+		const serializedPuzzle = puzzle
+			? { title: title, start: puzzle.start, end: puzzle.end }
+			: freeplayExample;
+
+		freeplayPuzzle.set(serializedPuzzle);
+
+		// Fallback index in case the puzzle can't be found for some reason
+		if (puzzle === undefined) {
+			freeplayPuzzlesIndex.set(
+				get(freeplayPuzzlesArray).findIndex(
+					(title) => title === freeplayExample.title,
+				),
+			);
+		}
+
+		hasChangedFreeplayPuzzle.set(true);
+		shouldReset.set(true);
+	};
 </script>
 
 {#if $storageNoticeVisible}
@@ -631,6 +669,59 @@ A component that presents users with various game settings.
 
 					<div class="select-container">
 						<div aria-hidden="true" class="label">Puzzle</div>
+						<button
+							title="Random puzzle"
+							class="circular-button"
+							on:click={() => (!touchRandomActive ? randomPuzzleHandler() : {})}
+							on:touchstart|preventDefault={() => {
+								touchRandomActive = true;
+								randomPuzzleHandler();
+							}}
+							on:touchend={() => (touchRandomActive = false)}
+						>
+							<svg
+								aria-hidden="true"
+								viewBox="0 0 40.5014 46.562477"
+								stroke="var(--color-text)"
+								xmlns="http://www.w3.org/2000/svg"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								width="75%"
+								height="75%"
+							>
+								<g fill="none" stroke-width="2">
+									<path
+										d="m 0.661458,11.97135 19.588983,-11.3099 19.5895,11.3099 -19.5895,11.30991 z"
+									/>
+									<path
+										d="m 20.250441,23.28126 19.5895,-11.30991 v 22.61981 l -19.5895,11.30991 z"
+									/>
+									<path
+										d="M 0.661458,11.97135 20.250441,23.28126 V 45.90107 L 0.661458,34.59116 Z"
+									/>
+								</g>
+								<g fill="var(--color-text)" stroke-width="0.75">
+									<path
+										d="m 22.380275,10.741835 c 1.176139,0.679046 1.176139,1.779994 0,2.459041 -1.176141,0.679047 -3.08303,0.679039 -4.259161,-8e-6 -1.176125,-0.679039 -1.176125,-1.779987 0,-2.459026 1.176131,-0.679047 3.08302,-0.679055 4.259161,-7e-6 z"
+									/>
+									<path
+										d="m 32.174791,27.706694 c 0,1.358093 -0.953452,3.009515 -2.129608,3.688562 -1.176149,0.67904 -2.1296,0.128565 -2.1296,-1.22952 0,-1.358087 0.953451,-3.009516 2.1296,-3.688555 1.176156,-0.679048 2.129608,-0.128574 2.129608,1.229513 z"
+									/>
+									<path
+										d="m 27.594774,35.524503 c 0,1.358087 -0.953452,3.009516 -2.12961,3.688555 -1.176148,0.679047 -2.1296,0.128574 -2.1296,-1.229513 0,-1.358094 0.953452,-3.009515 2.1296,-3.688562 1.176158,-0.67904 2.12961,-0.128566 2.12961,1.22952 z"
+									/>
+									<path
+										d="m 36.754817,19.888884 c 0,1.358087 -0.953452,3.009508 -2.1296,3.688555 -1.176157,0.679046 -2.129608,0.128573 -2.129608,-1.229522 0,-1.358086 0.953451,-3.009508 2.129608,-3.688555 1.176148,-0.679048 2.1296,-0.128573 2.1296,1.229522 z"
+									/>
+									<path
+										d="m 8.0055978,22.347929 c 0,1.358087 -0.9534319,1.908568 -2.1295515,1.229521 -1.1761185,-0.679046 -2.1295507,-2.330468 -2.1295507,-3.688554 0,-1.358095 0.9534322,-1.908569 2.1295507,-1.229522 1.1761196,0.679047 2.1295515,2.330468 2.1295515,3.688555 z"
+									/>
+									<path
+										d="m 17.165403,37.983525 c 0,1.358095 -0.953436,1.908568 -2.129552,1.229521 -1.17612,-0.679048 -2.129552,-2.330468 -2.129552,-3.688555 0,-1.358095 0.953432,-1.908568 2.129552,-1.229521 1.176116,0.679048 2.129552,2.330469 2.129552,3.688555 z"
+									/>
+								</g>
+							</svg>
+						</button>
 						<label class="visually-hidden" for="puzzles-select"
 							>freeplay puzzle</label
 						>
@@ -653,6 +744,12 @@ A component that presents users with various game settings.
 									? { title: value, start: puzzle.start, end: puzzle.end }
 									: freeplayExample;
 								freeplayPuzzle.set(serializedPuzzle);
+								freeplayPuzzlesIndex.set(
+									get(freeplayPuzzlesArray).findIndex(
+										(title) => title === value,
+									),
+								);
+								hasChangedFreeplayPuzzle.set(true);
 								shouldReset.set(true);
 							}}
 							clearable={false}
@@ -899,6 +996,18 @@ A component that presents users with various game settings.
 
 	button:disabled:hover {
 		background-color: var(--color-disabled-bg);
+	}
+
+	.circular-button {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 0;
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		border: 3px solid var(--color-border);
+		margin: 3px 5px;
 	}
 
 	.user-info {

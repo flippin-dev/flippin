@@ -25,6 +25,7 @@ A component that holds extra control buttons separate from the main controls.
 <div
 	bind:this={toolbar}
 	data-toolbar-size={isWon || $hintActive ? 0 : 2}
+	data-toolbar-direction="horizontal"
 	role="toolbar"
 	aria-controls="game-board"
 	aria-label="extra game controls"
