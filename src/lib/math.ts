@@ -307,10 +307,11 @@ export function findMinimalSolution(start: string, end: string): number[] {
 
 	// Check if there even is a solution
 	if (compareVectorsModN(vMLeftMultiply(x, mA), b, 3)) {
-		let solution = modV(x, 3);
-		let minimum = solution.reduce((sum, current) => sum + current, 0);
+		const base = modV(x, 3);
+		let solution = base;
+		let minimum = base.reduce((sum, current) => sum + current, 0);
 		for (const v of solutionVectors) {
-			const altSolution = modV(vVAdd(solution, v), 3);
+			const altSolution = modV(vVAdd(base, v), 3);
 			const altSolutionSum = altSolution.reduce(
 				(sum, current) => sum + current,
 				0,
