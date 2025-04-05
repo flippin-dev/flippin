@@ -24,7 +24,7 @@ const config = {
 			base: '/flippin',
 		},
 		version: {
-			name: '1.3.1',
+			name: '1.3.2',
 		},
 	},
 };
