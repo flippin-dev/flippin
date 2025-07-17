@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Initial freeplay puzzle had incorrect index if puzzle titles were not unique.
+- Renamed puzzle with duplicate title "Rose" and others in same week.
+
 ## [1.3.2] - 2025-04-05
 
 ### Added
