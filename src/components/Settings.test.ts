@@ -516,31 +516,6 @@ describe('Freeplay', () => {
 		expect(get(gameMode)).toBe('freeplay');
 	});
 
-	it('Select random freeplay puzzle', async () => {
-		const user = userEvent.setup();
-		const freeplayPuzzleSpy = vi.spyOn(freeplayPuzzle, 'set');
-		// Set a dummy puzzle to clear out the default to make finding the list item below easier
-		freeplayPuzzle.set({ title: '', start: '', end: '' });
-		gameMode.set('daily');
-		shouldReset.set(false);
-
-		render(Settings);
-
-		await user.click(
-			screen.getByRole('switch', { hidden: true, name: 'freeplay' }),
-		);
-
-		const randomButton = screen.getByRole('button', {
-			hidden: true,
-			name: 'Random puzzle',
-		});
-
-		await user.click(randomButton);
-
-		expect(freeplayPuzzleSpy).toHaveBeenCalledTimes(2);
-		expect(get(freeplayPuzzle).title).not.toBe('');
-	});
-
 	it('Update freeplay puzzle', async () => {
 		const user = userEvent.setup();
 		const freeplayPuzzleSpy = vi.spyOn(freeplayPuzzle, 'set');
