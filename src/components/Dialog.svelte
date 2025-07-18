@@ -41,7 +41,7 @@ A component that creates a dialog box over the page which can be filled with con
     Tab navigation users should instead use the dedicated close button or the Escape key. -->
 	<dialog
 		bind:this={dialog}
-		in:fade={{ easing: quadOut, duration: 200 }}
+		in:fade|global={{ easing: quadOut, duration: 200 }}
 		on:close={() => {
 			if (!confirmation || isStandalone) {
 				currentScreen.set(null);
@@ -49,7 +49,7 @@ A component that creates a dialog box over the page which can be filled with con
 				storageNoticeVisible.set(false);
 			}
 		}}
-		out:fade={{ easing: quadOut, duration: 200 }}
+		out:fade|global={{ easing: quadOut, duration: 200 }}
 		on:click|self={() => {
 			if (!confirmation) {
 				dialog.close();

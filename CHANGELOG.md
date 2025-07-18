@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Puzzle preview and navigation buttons added above freeplay puzzle select list.
 
+### Changed
+
+- Updated dialog transitions to be more consistent.
+
 ### Fixed
 
 - Initial freeplay puzzle had incorrect index if puzzle titles were not unique.
