@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2025-07-19
+
+### Added
+
+- Puzzle preview and navigation buttons added above freeplay puzzle select list.
+- 56 new daily puzzles.
+
+### Changed
+
+- Updated dialog transitions to be more consistent.
+
+### Fixed
+
+- Initial freeplay puzzle had incorrect index if puzzle titles were not unique.
+- Renamed puzzle with duplicate title "Rose" and others in same week.
+
 ## [1.3.2] - 2025-04-05
 
 ### Added
