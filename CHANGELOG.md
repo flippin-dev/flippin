@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Puzzle preview and navigation buttons added above freeplay puzzle select list.
+- 56 new daily puzzles.
 
 ### Changed
 
