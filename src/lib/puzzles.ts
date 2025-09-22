@@ -1689,6 +1689,7 @@ export const puzzles: SerializedPuzzle[] = [
 		start: '2222222111011101211001021',
 		end: '2222222222222122121222112',
 	},
+	// Football
 	{
 		title: 'Coin Flip',
 		start: '2002212202020122110121111',
@@ -1716,7 +1717,7 @@ export const puzzles: SerializedPuzzle[] = [
 	},
 	{
 		title: 'End Zone',
-		start: '0220112000100202212101210',
+		start: '1021020220120221100220022',
 		end: '2020022222000001111111111',
 	},
 	{

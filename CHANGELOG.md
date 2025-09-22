@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Changed start state of "End Zone" puzzle so that it is solvable.
+
 ## [1.4.1] - 2025-09-15
 
 ### Added
