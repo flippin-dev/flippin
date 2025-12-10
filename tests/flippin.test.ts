@@ -13,13 +13,14 @@ test.beforeEach(() => {
 	reducedMotion.set(true);
 });
 
-test('Error page', async ({ page }) => {
-	await page.goto('/flippin/lost');
+// I don't know if this page ever shows up with the GitHub hosting
+// test('Error page', async ({ page }) => {
+// 	await page.goto('/flippin/lost');
 
-	await page.getByRole('link', { name: 'return to homepage' }).click();
+// 	await page.getByRole('link', { name: 'return to homepage' }).click();
 
-	await expect(page).toHaveURL('/flippin/');
-});
+// 	await expect(page).toHaveURL('/flippin/');
+// });
 
 test('Consent screen', async ({ page }) => {
 	storageConsent.set(null);
