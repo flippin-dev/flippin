@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.4] - 2025-12-09
+
+### Added
+
+- 21 new daily puzzles.
+
 ## [1.4.3] - 2025-11-02
 
 ### Added
