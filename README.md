@@ -12,6 +12,8 @@ Puzzle difficulty increases throughout the week:
 - **Medium** - Wednesday, Thursday, Friday
 - **Hard** - Saturday, Sunday
 
+**NOTE:** As of 2026-02-01, daily puzzles are being paused. Freeplay puzzles (including all previous daily puzzles) are still available for play. Thank you for playing Flippin!
+
 ## [🟥🟩🟦 Play Flippin here!](https://flippin-dev.github.io/flippin/)
 
 ### [📃 Changelog](CHANGELOG.md) | [🧬 Design](ARCHITECTURE.md) | [🐞 Bug Report](https://github.com/flippin-dev/flippin/issues/new?assignees=flippin-dev&labels=bug&projects=&template=bug_report.md&title=%5BBUG%5D) | [💡 Feature Suggestion](https://github.com/flippin-dev/flippin/issues/new?assignees=flippin-dev&labels=enhancement&projects=&template=feature_request.md&title=%5BSUGGESTION%5D) | [💬 Discussion](https://github.com/flippin-dev/flippin/discussions/new/choose) | [📑 License](LICENSE) | [🙏 Acknowledgments](/static/humans.txt)
