@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/svelte';
 import { expect, it } from 'vitest';
-import { gameMode, gameNumber } from '$src/stores/stores';
+import { gameMode, gameNumber, hasDailyPuzzle } from '$src/stores/stores';
 import Title from '$com/Title.svelte';
 
 const ResizeObserverMock = vi.fn(() => ({
@@ -14,6 +14,7 @@ vi.stubGlobal('ResizeObserver', ResizeObserverMock);
 it('Game mode is "daily"', () => {
 	gameNumber.set(1);
 	gameMode.set('daily');
+	hasDailyPuzzle.set(true);
 
 	render(Title);
 
