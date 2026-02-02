@@ -1,9 +1,11 @@
 import { render, screen } from '@testing-library/svelte';
 import { expect, it } from 'vitest';
-import { gameMode } from '$src/stores/stores';
+import { gameMode, hasDailyPuzzle } from '$src/stores/stores';
 import GameOverBlock from '$com/GameOverBlock.svelte';
 
 it('Game mode is "daily"', () => {
+	// Set gameNumber to 1 so that the first daily puzzle is used
+	hasDailyPuzzle.set(true);
 	gameMode.set('daily');
 
 	render(GameOverBlock);
@@ -24,6 +26,8 @@ it('Game mode is "daily"', () => {
 });
 
 it('Game mode is "freeplay"', () => {
+	// Set gameNumber to 1 so that there is a next daily puzzle
+	hasDailyPuzzle.set(true);
 	gameMode.set('freeplay');
 
 	render(GameOverBlock);

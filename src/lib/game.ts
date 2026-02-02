@@ -40,8 +40,7 @@ export class Game {
 	 */
 	constructor(
 		currentState: string = '',
-		puzzle: SerializedPuzzle = get(gameNumber) > 0 &&
-		get(gameNumber) < puzzles.length + 1
+		puzzle: SerializedPuzzle = get(gameNumber) > 0
 			? puzzles[get(gameNumber) - 1]
 			: freeplayExample,
 	) {

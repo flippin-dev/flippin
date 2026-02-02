@@ -46,14 +46,22 @@ export const currentScreen: Writable<
 /** The storage consent notice is visible. */
 export const storageNoticeVisible: Writable<boolean> = writable(false);
 /** The daily game number. */
-export const gameNumber: Writable<number> = writable(getDaysFromStart());
+export const gameNumber: Writable<number> = writable(
+	getDaysFromStart() <= puzzles.length ? getDaysFromStart() : puzzles.length,
+);
+/** Whether or not there is a daily puzzles available */
+export const hasDailyPuzzle: Writable<boolean> = writable(
+	getDaysFromStart() <= puzzles.length ? true : false,
+);
 /** The daily puzzle title. */
 export const dailyTitle: Readable<string> = derived(
-	gameNumber,
-	($gameNumber) => {
-		return $gameNumber > 0 && $gameNumber < puzzles.length + 1
-			? puzzles[$gameNumber - 1].title
-			: freeplayExample.title;
+	[gameNumber, hasDailyPuzzle],
+	([$gameNumber, $hasDailyPuzzle]) => {
+		return $gameNumber <= 0
+			? freeplayExample.title
+			: $hasDailyPuzzle
+				? puzzles[$gameNumber - 1].title
+				: puzzles[puzzles.length - 1].title;
 	},
 );
 
@@ -162,8 +170,8 @@ export const customPuzzles: Writable<[string, Puzzle][]> = locallyPersistable(
 );
 /** Selectable freeplay puzzles. */
 export const freeplayPuzzles: Readable<Map<string, Puzzle>> = derived(
-	[gameNumber, customPuzzles],
-	([$gameNumber, $customPuzzles]) => {
+	[gameNumber, customPuzzles, hasDailyPuzzle],
+	([$gameNumber, $customPuzzles, $hasDailyPuzzle]) => {
 		const puzzlesMap = new Map<string, Puzzle>();
 
 		// Allow old daily puzzles to be replayed
@@ -172,7 +180,7 @@ export const freeplayPuzzles: Readable<Map<string, Puzzle>> = derived(
 			{ title: title, start: start, end: end },
 		] of puzzles.entries()) {
 			// Only allow freeplay on puzzles before the current day
-			if (index + 1 === $gameNumber) {
+			if ($hasDailyPuzzle && index + 1 === $gameNumber) {
 				break;
 			}
 
@@ -247,7 +255,5 @@ export const freeplayPuzzlesArray: Readable<string[]> = derived(
 
 /** The current position in the freeplay puzzles array. */
 export const freeplayPuzzlesIndex: Writable<number> = writable(
-	get(gameNumber) > 0 && get(gameNumber) < puzzles.length + 1
-		? get(gameNumber) - 1
-		: puzzles.length,
+	get(hasDailyPuzzle) ? get(gameNumber) - 1 : puzzles.length,
 );

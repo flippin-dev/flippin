@@ -165,6 +165,14 @@ A component containing the rules of Flippin.
 	<hr />
 
 	<p>
+		<strong>Note:</strong> As of 2026-02-01, daily puzzles are being paused. Freeplay
+		puzzles (including all previous daily puzzles) are still available for play.
+		Thank you for playing Flippin!
+	</p>
+
+	<hr />
+
+	<p>
 		For more information about Flippin, check out the official <a
 			href="https://github.com/flippin-dev/flippin">repository</a
 		>.
