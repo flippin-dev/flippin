@@ -18,6 +18,7 @@ A component that presents a congratulatory message, the time until the next dail
 		gameMode,
 		gameNumber,
 		gameTime,
+		hasDailyPuzzle,
 		reducedMotion,
 	} from '$src/stores/stores';
 	import { boardSize } from '$lib/game';
@@ -222,37 +223,41 @@ A component that presents a congratulatory message, the time until the next dail
 	class="game-over-block"
 	class:reduced-motion={$reducedMotion}
 >
-	<div role="presentation" class="game-recap">
-		<p>
-			<strong>{gameMessage}</strong>
-		</p>
+	{#if $gameMode !== 'daily' || $hasDailyPuzzle}
+		<div role="presentation" class="game-recap">
+			<p>
+				<strong>{gameMessage}</strong>
+			</p>
 
-		<p>Moves: {moveCount}</p>
-		<p>Resets: {resetCount}</p>
-		<p>Hints: {hintCount}</p>
-	</div>
+			<p>Moves: {moveCount}</p>
+			<p>Resets: {resetCount}</p>
+			<p>Hints: {hintCount}</p>
+		</div>
 
-	<button
-		class="share-button"
-		title="Copy results to clipboard"
-		on:click={share}
-		aria-label="copy game results to clipboard"
-	>
-		Share
-	</button>
+		<button
+			class="share-button"
+			title="Copy results to clipboard"
+			on:click={share}
+			aria-label="copy game results to clipboard"
+		>
+			Share
+		</button>
 
-	<p class="label-text">NEW PUZZLE IN:</p>
+		{#if $hasDailyPuzzle}
+			<p class="label-text">NEW PUZZLE IN:</p>
 
-	<div
-		role="timer"
-		aria-label="countdown to next daily puzzle"
-		class="countdown-container"
-	>
-		<Countdown message={countdownMessage} />
-	</div>
+			<div
+				role="timer"
+				aria-label="countdown to next daily puzzle"
+				class="countdown-container"
+			>
+				<Countdown message={countdownMessage} />
+			</div>
+		{/if}
+	{/if}
 
 	{#if $gameMode === 'daily'}
-		<p class="label-text">OR TRY FREEPLAY!</p>
+		<p class="label-text">TRY FREEPLAY MODE!</p>
 
 		<button
 			title="Start random freeplay puzzle"

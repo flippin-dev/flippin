@@ -19,6 +19,7 @@
 		freeplayGameDetails,
 		shouldResetFreeplayTimer,
 		hasChangedFreeplayPuzzle,
+		hasDailyPuzzle,
 	} from '$src/stores/stores';
 	import Title from '$com/Title.svelte';
 	import Controls from '$com/Controls.svelte';
@@ -27,7 +28,7 @@
 	import { newGameDetails, newStats } from '$lib/stats';
 	import { Game, boardSize } from '$lib/game';
 	import GameOverBlock from '$com/GameOverBlock.svelte';
-	import { freeplayExample } from '$lib/puzzles';
+	import { freeplayExample, puzzles } from '$lib/puzzles';
 	import { maxTime } from '$lib/time';
 	import type { TransitionConfig } from 'svelte/transition';
 	import { navigateTable } from '$lib/page-utilities';
@@ -186,7 +187,7 @@
 		}
 
 		// Set game time and current board if the last played game matches the current day
-		if (curGameDetails?.lastGame === get(gameNumber)) {
+		if (get(hasDailyPuzzle) && curGameDetails?.lastGame === get(gameNumber)) {
 			gameTime.set(curGameDetails?.curTime ?? 0);
 			moveCount = curGameDetails?.moveCount ?? 0;
 			resetCount = curGameDetails?.resetCount ?? 0;
@@ -195,7 +196,12 @@
 			const currentBoard = curGameDetails?.curBoard ?? '';
 			game = new Game(currentBoard);
 		} else {
-			game = new Game();
+			game = get(hasDailyPuzzle)
+				? new Game()
+				: new Game(
+						puzzles[puzzles.length - 1].end,
+						puzzles[puzzles.length - 1],
+					);
 			gameTime.set(0);
 			gameDetails.update(() => {
 				return {
@@ -361,7 +367,12 @@
 		// Reset game
 		if (isDaily) {
 			resetCount++;
-			game = new Game();
+			game = get(hasDailyPuzzle)
+				? new Game()
+				: new Game(
+						puzzles[puzzles.length - 1].end,
+						puzzles[puzzles.length - 1],
+					);
 		} else {
 			game = new Game('', get(freeplayPuzzle) ?? freeplayExample);
 
